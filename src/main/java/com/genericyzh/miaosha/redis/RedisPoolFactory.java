@@ -15,7 +15,7 @@ public class RedisPoolFactory {
 
     private static RedisPoolFactory redisPoolClient;
 
-    public RedisPoolFactory() {
+    private RedisPoolFactory() {
         // 不能这么使用，因为这时的redisConfig还没实例化
         //initPool();
         RedisPoolFactory.redisPoolClient = this;
