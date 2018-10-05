@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS miaosha_user (
   id           VARCHAR(16) NOT NULL
   COMMENT
     '手机',

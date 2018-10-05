@@ -31,10 +31,10 @@ spring:
     maxActive: 1000
     username: root
 #redis
-redis: 
-  host: localhost
+redis:
+  host: 192.168.0.110
   port: 6379
-  timeout: 10
+  timeout: 3
   password: 123456
   poolMaxTotal: 1000
   poolMaxIdle: 500

@@ -13,14 +13,23 @@ public class RedisClient {
 
     public static <R> R execute(Function<Jedis, R> fun) {
         Jedis jedis = RedisPoolFactory.getInstance().getJedis();
-        return fun.apply(jedis);
+        try {
+            return fun.apply(jedis);
+        } catch (Exception e) {
+            jedis.close();
+            throw e;
+        }
     }
 
     public static <R, S> R execute(Function<Jedis, S> fun, Class<R> clz) {
         Jedis jedis = RedisPoolFactory.getInstance().getJedis();
-        S apply = fun.apply(jedis);
-        return SerializeUtil.stringToBean((String) apply, clz);
-
+        try {
+            S apply = fun.apply(jedis);
+            return SerializeUtil.stringToBean((String) apply, clz);
+        } catch (Exception e) {
+            jedis.close();
+            throw e;
+        }
     }
 
 
