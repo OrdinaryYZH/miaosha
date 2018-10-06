@@ -1,15 +1,13 @@
 package com.genericyzh.miaosha.user.dao;
 
-import com.genericyzh.miaosha.user.model.view.UserDBView;
+import com.genericyzh.miaosha.user.model.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface UserDao {
 
-    @Select("select * from miaosha_user where id = #{id}")
-    UserDBView getById(@Param("id") long id);
+    UserInfo getById(@Param("id") String id);
 
 //    @Update("update miaosha_user set password = #{password} where id = #{id}")
 //    public void update(MiaoshaUser toBeUpdate);

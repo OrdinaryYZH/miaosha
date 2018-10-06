@@ -1,8 +1,7 @@
 package com.genericyzh.miaosha.user.service;
 
 import com.genericyzh.miaosha.login.model.query.LoginQuery;
-import com.genericyzh.miaosha.user.model.bo.UserBO;
-import com.genericyzh.miaosha.user.model.view.UserDBView;
+import com.genericyzh.miaosha.user.model.UserInfo;
 import com.genericyzh.miaosha.user.model.vo.UserVO;
 
 /**
@@ -11,7 +10,7 @@ import com.genericyzh.miaosha.user.model.vo.UserVO;
  */
 public interface UserService {
 
-    public UserDBView getById(long id);
+    public UserInfo getById(String id);
 
     public boolean updatePassword(String token, long id, String formPass);
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.genericyzh.miaosha.user.dao.UserDao">
+
+    <select id="getById" resultType="com.genericyzh.miaosha.user.model.UserInfo">
+        select
+          *
+        from
+          miaosha_user m_user
+        where m_user.`id` = ${id}
+    </select>
+
+</mapper>

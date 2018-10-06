@@ -5,7 +5,7 @@ import com.genericyzh.miaosha.login.model.query.LoginQuery;
 import com.genericyzh.miaosha.redis.RedisClient;
 import com.genericyzh.miaosha.redis.key.MiaoshaUserKey;
 import com.genericyzh.miaosha.user.dao.UserDao;
-import com.genericyzh.miaosha.user.model.view.UserDBView;
+import com.genericyzh.miaosha.user.model.UserInfo;
 import com.genericyzh.miaosha.user.model.vo.UserVO;
 import com.genericyzh.miaosha.user.service.UserService;
 import com.genericyzh.miaosha.utils.MD5Util;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public UserDBView getById(long id) {
+    public UserInfo getById(String id) {
         return userDao.getById(id);
     }
 
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
         String mobile = loginQuery.getMobile();
         String formPass = loginQuery.getPassword();
         //判断手机号是否存在
-        UserDBView user = getById(Long.parseLong(mobile));
+        UserInfo user = getById(mobile);
         if (user == null) {
             throw new BusinessException("用户不存在或者密码错误");
         }
@@ -58,7 +58,10 @@ public class UserServiceImpl implements UserService {
         //生成cookie
         String token = UUIDUtil.uuid();
         RedisClient.execute(jedis -> jedis.set(MiaoshaUserKey.token.appendPrefix(token),
-                SerializeUtil.beanToString(user)));
+                SerializeUtil.beanToString(user),
+                "nx",
+                "ex",
+                MiaoshaUserKey.token.expireSeconds()));
         return token;
     }
 }

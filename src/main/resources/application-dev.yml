@@ -7,7 +7,7 @@ mybatis:
     default-fetch-size: 100
     default-statement-timeout: 3000
     map-underscore-to-camel-case: true
-  mapperLocations: classpath:com/genericyzh/miaosha/*/dao/*.xml
+  mapperLocations: mapper/**/*.xml
 #  type-aliases-package:
 #druid
 spring:
@@ -32,10 +32,14 @@ spring:
     username: root
 #redis
 redis:
-  host: 192.168.0.110
+  host: 192.168.0.111
   port: 6379
   timeout: 3
   password: 123456
   poolMaxTotal: 1000
   poolMaxIdle: 500
   poolMaxWait: 500
+
+#日志
+logging:
+  config: classpath:config/log4j2-dev.xml

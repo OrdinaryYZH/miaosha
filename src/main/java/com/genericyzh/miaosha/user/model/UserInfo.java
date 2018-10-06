@@ -1,4 +1,4 @@
-package com.genericyzh.miaosha.user.model.view;
+package com.genericyzh.miaosha.user.model;
 
 import java.util.Date;
 
@@ -6,15 +6,15 @@ import java.util.Date;
  * @author genericyzh
  * @date 2018/10/5 16:20
  */
-public class UserDBView {
+public class UserInfo {
 
     private String id;
     private String nickname;
     private String head;
     private String password;
     private String salt;
-    private Date gmt_create;
-    private Date gmt_modified;
+    private Date gmtCreate;
+    private Date gmtModified;
 
     public String getId() {
         return id;
@@ -56,19 +56,19 @@ public class UserDBView {
         this.salt = salt;
     }
 
-    public Date getGmt_create() {
-        return gmt_create;
+    public Date getGmtCreate() {
+        return gmtCreate;
     }
 
-    public void setGmt_create(Date gmt_create) {
-        this.gmt_create = gmt_create;
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmt_modified() {
-        return gmt_modified;
+    public Date getGmtModified() {
+        return gmtModified;
     }
 
-    public void setGmt_modified(Date gmt_modified) {
-        this.gmt_modified = gmt_modified;
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 }
