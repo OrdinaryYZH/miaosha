@@ -6,6 +6,8 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import javax.annotation.PreDestroy;
+
 /**
  * @author genericyzh
  * @date 2018/10/2 16:08
@@ -19,6 +21,13 @@ public class RedisPoolFactory {
         // 不能这么使用，因为这时的redisConfig还没实例化
         //initPool();
         RedisPoolFactory.redisPoolClient = this;
+    }
+
+    @PreDestroy
+    private void closePool() {
+        if (this.pool != null) {
+            pool.close();
+        }
     }
 
     /**

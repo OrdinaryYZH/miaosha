@@ -2,7 +2,9 @@ package com.genericyzh.miaosha.access;
 
 import com.genericyzh.miaosha.redis.RedisClient;
 import com.genericyzh.miaosha.redis.key.MiaoshaUserKey;
+import com.genericyzh.miaosha.user.model.UserInfo;
 import com.genericyzh.miaosha.utils.CookieUtil;
+import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +38,15 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         RedisClient.execute(jedis -> jedis.expire(token, MiaoshaUserKey.token.expireSeconds()));
         CookieUtil.writeLoginToken(response, token);
 
+        // 设置线程用户
+        UserInfo userInfo = RedisClient.execute(jedis -> jedis.get(MiaoshaUserKey.token.appendPrefix(token)), UserInfo.class);
+        UserContext.setUser(userInfo);
+
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
+        UserContext.clearUser();
     }
 }

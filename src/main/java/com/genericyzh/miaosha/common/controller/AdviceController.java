@@ -64,9 +64,9 @@ public class AdviceController implements ResponseBodyAdvice {
         if (!(body instanceof ResultBean)) {
             ResultBean resultBean = new ResultBean.Builder().buildOK(body);
             //因为handler处理类的返回类型是String，为了保证一致性，这里需要将ResultBean转回去
-//            if (body instanceof String) {
-//                return JSON.toJSONString(resultBean);
-//            }
+            if (body instanceof String) {
+                return body;
+            }
             return resultBean;
         }
         return body;

@@ -1,9 +1,45 @@
+#web
+server:
+  port: 8080
+# mybatis
+mybatis:
+  configuration:
+    default-fetch-size: 100
+    default-statement-timeout: 3000
+    map-underscore-to-camel-case: true
+  mapperLocations: mapper/**/*.xml
+#  type-aliases-package:
+#druid
+spring:
+  datasource:
+    minIdle: 500
+    validationQuery: select 'x'
+    initialSize: 100
+    maxWait: 60000
+    filters: stat
+    poolPreparedStatements: true
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    password: 123456
+    testOnBorrow: false
+    maxOpenPreparedStatements: 20
+    testWhileIdle: true
+    minEvictableIdleTimeMillis: 300000
+    timeBetweenEvictionRunsMillis: 60000
+    testOnReturn: false
+    driver-class-name: com.mysql.jdbc.Driver
+    maxActive: 1000
+    username: root
 #redis
 redis:
   host: 192.168.0.111
   port: 6379
-  timeout: 10
+  timeout: 3
   password: 123456
   poolMaxTotal: 1000
   poolMaxIdle: 500
   poolMaxWait: 500
+
+#日志
+logging:
+  config: classpath:config/log4j2-dev.xml
