@@ -23,9 +23,7 @@ public class CookieUtil {
         Cookie[] cks = request.getCookies();
         if (cks != null) {
             for (Cookie ck : cks) {
-                LOGGER.info("read cookieName:{},cookieValue:{}", ck.getName(), ck.getValue());
                 if (StringUtils.equals(ck.getName(), COOKIE_NAME)) {
-                    LOGGER.info("return cookieName:{},cookieValue:{}", ck.getName(), ck.getValue());
                     return ck.getValue();
                 }
             }
@@ -46,7 +44,6 @@ public class CookieUtil {
         ck.setPath("/");//代表设置在根目录
         ck.setHttpOnly(true);
         ck.setMaxAge(MiaoshaUserKey.token.expireSeconds());
-        LOGGER.info("write cookieName:{},cookieValue:{}", ck.getName(), ck.getValue());
         response.addCookie(ck);
     }
 
@@ -59,7 +56,6 @@ public class CookieUtil {
 //                    ck.setDomain();
                     ck.setPath("/");
                     ck.setMaxAge(0);
-                    LOGGER.info("del cookieName:{},cookieValue:{}", ck.getName(), ck.getValue());
                     response.addCookie(ck);
                     return;
                 }
