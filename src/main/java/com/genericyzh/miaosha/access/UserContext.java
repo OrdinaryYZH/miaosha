@@ -3,7 +3,7 @@ package com.genericyzh.miaosha.access;
 
 import com.genericyzh.miaosha.user.model.UserInfo;
 
-public class UserContext {
+public abstract class UserContext {
 
     private static ThreadLocal<UserInfo> userHolder = new ThreadLocal<>();
 
