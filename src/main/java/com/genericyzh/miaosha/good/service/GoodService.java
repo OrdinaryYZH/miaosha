@@ -1,6 +1,7 @@
 package com.genericyzh.miaosha.good.service;
 
-import com.genericyzh.miaosha.good.model.vo.GoodVo;
+import com.genericyzh.miaosha.good.model.vo.GoodDetailVO;
+import com.genericyzh.miaosha.good.model.vo.GoodVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,13 +10,13 @@ import java.util.List;
 public interface GoodService {
 
 
-    public List<GoodVo> listGoodsVo();
+    public List<GoodVO> listGoodsVo();
 
-    public GoodVo getGoodsVoByGoodsId(long goodsId);
+    public GoodDetailVO.MiaoshaGoodDetail getGoodsVoByGoodsId(long goodsId);
 
-    public boolean reduceStock(GoodVo goods);
+    public boolean reduceStock(GoodVO goods);
 
-    public void resetStock(List<GoodVo> goodsList);
+    public void resetStock(List<GoodVO> goodsList);
 
 
 }

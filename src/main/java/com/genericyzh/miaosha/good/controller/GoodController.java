@@ -1,7 +1,8 @@
 package com.genericyzh.miaosha.good.controller;
 
 import com.genericyzh.miaosha.access.UserContext;
-import com.genericyzh.miaosha.good.model.vo.GoodVo;
+import com.genericyzh.miaosha.good.model.vo.GoodDetailVO;
+import com.genericyzh.miaosha.good.model.vo.GoodVO;
 import com.genericyzh.miaosha.good.service.GoodService;
 import com.genericyzh.miaosha.redis.RedisClient;
 import com.genericyzh.miaosha.redis.key.GoodKey;
@@ -9,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.thymeleaf.context.WebContext;
@@ -38,7 +40,7 @@ public class GoodController {
         if (!StringUtils.isEmpty(cacheHtml)) {
             return cacheHtml;
         }
-        List<GoodVo> goodsList = goodService.listGoodsVo();
+        List<GoodVO> goodsList = goodService.listGoodsVo();
         model.addAttribute("goodsList", goodsList);
 //    	 return "goods_list";
         WebContext ctx = new WebContext(request, response, request.getServletContext(),
@@ -50,5 +52,34 @@ public class GoodController {
         }
         return html;
     }
+
+    @RequestMapping(value = "/detail/{goodId}")
+    @ResponseBody
+    public GoodDetailVO detail(
+            @PathVariable("goodId") long goodId) {
+        GoodDetailVO.MiaoshaGoodDetail goods = goodService.getGoodsVoByGoodsId(goodId);
+        long startAt = goods.getStartDate().getTime();
+        long endAt = goods.getEndDate().getTime();
+        long now = System.currentTimeMillis();
+        int miaoshaStatus = 0;
+        int remainSeconds = 0;
+        if (now < startAt) {//秒杀还没开始，倒计时
+            miaoshaStatus = 0;
+            remainSeconds = (int) ((startAt - now) / 1000);
+        } else if (now > endAt) {//秒杀已经结束
+            miaoshaStatus = 2;
+            remainSeconds = -1;
+        } else {//秒杀进行中
+            miaoshaStatus = 1;
+            remainSeconds = 0;
+        }
+        GoodDetailVO vo = new GoodDetailVO();
+        vo.setGood(goods);
+        vo.setUser(UserContext.getUser());
+        vo.setRemainSeconds(remainSeconds);
+        vo.setMiaoshaStatus(miaoshaStatus);
+        return vo;
+    }
+
 
 }

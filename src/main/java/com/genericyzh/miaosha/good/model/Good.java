@@ -4,7 +4,7 @@ public class Good {
     private Long id;
     private String goodsName;
     private String goodsTitle;
-    private String goodsImg;
+    private String goodImg;
     private String goodsDetail;
     private Double goodsPrice;
     private Integer goodsStock;
@@ -33,12 +33,12 @@ public class Good {
         this.goodsTitle = goodsTitle;
     }
 
-    public String getGoodsImg() {
-        return goodsImg;
+    public String getgoodImg() {
+        return goodImg;
     }
 
-    public void setGoodsImg(String goodsImg) {
-        this.goodsImg = goodsImg;
+    public void setgoodImg(String goodImg) {
+        this.goodImg = goodImg;
     }
 
     public String getGoodsDetail() {

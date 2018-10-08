@@ -17,11 +17,11 @@ CREATE TABLE IF NOT EXISTS miaosha_user (
 CREATE TABLE IF NOT EXISTS good (
   id           BIGINT(20) NOT NULL AUTO_INCREMENT
   COMMENT '商品ID',
-  goods_name   VARCHAR(16)         DEFAULT NULL
+  good_name   VARCHAR(16)         DEFAULT NULL
   COMMENT '商品名称',
   good_title   VARCHAR(64)         DEFAULT NULL
   COMMENT '商品标题',
-  goods_img    VARCHAR(64)         DEFAULT NULL
+  good_img    VARCHAR(64)         DEFAULT NULL
   COMMENT '商品的图片',
   good_deta111 LONGTEXT COMMENT ' 商品的详情介绍 ',
   good_price   DECIMAL(10, 2)      DEFAULT 0.00
@@ -109,5 +109,5 @@ INSERT INTO USER (id, nickname, PASSWORD, salt, head, gmt_create, gmt_modified
    )
   );
 
-INSERT INTO `miaosha`.`good` (`goods_name`, `good_title`, `goods_img`, `good_deta111`, `good_price`, `good_stock`)
+INSERT INTO `miaosha`.`good` (`good_name`, `good_title`, `good_img`, `good_deta111`, `good_price`, `good_stock`)
 VALUES ('iPhoneX', 'iPhoneX', 'img/iphonex.png', '超级无敌的iPhoneX来了，快来买咯', '8888', '88')

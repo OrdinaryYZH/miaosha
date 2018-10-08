@@ -42,11 +42,11 @@
   <table class="table" id="goodslist">
   	<tr>  
         <td>商品名称</td>  
-        <td colspan="3" id="goodsName"></td> 
+        <td colspan="3" id="goodName"></td> 
      </tr>  
      <tr>  
         <td>商品图片</td>  
-        <td colspan="3"><img  id="goodsImg" width="200" height="200" /></td>  
+        <td colspan="3"><img  id="goodImg" width="200" height="200" /></td>
      </tr>
      <tr>  
         <td>秒杀开始时间</td>  
@@ -73,7 +73,7 @@
      </tr>
      <tr>  
         <td>商品原价</td>  
-        <td colspan="3" id="goodsPrice"></td>  
+        <td colspan="3" id="goodPrice"></td>  
      </tr>
       <tr>  
         <td>秒杀价</td>  
@@ -173,19 +173,19 @@ function doMiaosha(path){
 function render(detail){
 	var miaoshaStatus = detail.miaoshaStatus;
 	var  remainSeconds = detail.remainSeconds;
-	var goods = detail.goods;
+	var good = detail.good;
 	var user = detail.user;
 	if(user){
 		$("#userTip").hide();
 	}
-	$("#goodsName").text(goods.goodsName);
-	$("#goodsImg").attr("src", goods.goodsImg);
-	$("#startTime").text(new Date(goods.startDate).format("yyyy-MM-dd hh:mm:ss"));
+	$("#goodName").text(good.goodName);
+	$("#goodImg").attr("src", good.goodImg);
+	$("#startTime").text(new Date(good.startDate).format("yyyy-MM-dd hh:mm:ss"));
 	$("#remainSeconds").val(remainSeconds);
-	$("#goodsId").val(goods.id);
-	$("#goodsPrice").text(goods.goodsPrice);
-	$("#miaoshaPrice").text(goods.miaoshaPrice);
-	$("#stockCount").text(goods.stockCount);
+	$("#goodsId").val(good.id);
+	$("#goodPrice").text(good.goodPrice);
+	$("#miaoshaPrice").text(good.miaoshaPrice);
+	$("#stockCount").text(good.stockCount);
 	countDown();
 }
 
@@ -195,9 +195,9 @@ $(function(){
 });
 
 function getDetail(){
-	var goodsId = g_getQueryString("goodsId");
+	var goodId = g_getQueryString("goodId");
 	$.ajax({
-		url:"/goods/detail/"+goodsId,
+		url:"/goods/detail/"+goodId,
 		type:"GET",
 		success:function(data){
 			if(data.code == 0){
