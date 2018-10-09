@@ -1,5 +1,6 @@
 package com.genericyzh.miaosha.common.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.genericyzh.miaosha.common.exception.BusinessException;
 import com.genericyzh.miaosha.common.result.ResultBean;
 import com.genericyzh.miaosha.common.result.ResultCode;
@@ -52,9 +53,6 @@ public class AdviceController implements ResponseBodyAdvice {
     }
 
     private void outputErrorLog(Exception e) {
-//        LOGGER.error("\n>>>>>>  AdviceController::outputErrorLog()\n" +
-//                ">>>>>>  params::e = [{}]\n" +
-//                ">>>>>>  错误栈:\n", e);
         LOGGER.error("", e);
     }
 
@@ -68,7 +66,11 @@ public class AdviceController implements ResponseBodyAdvice {
         if (!(body instanceof ResultBean)) {
             ResultBean resultBean = new ResultBean.Builder().buildOK(body);
             if (body instanceof String) {
-                return body;
+                if (selectedContentType.equals(MediaType.APPLICATION_JSON_UTF8))
+                    return JSON.toJSONString(resultBean);
+                else if (selectedContentType.equals(MediaType.TEXT_HTML)) {
+                    return body;
+                }
             }
             return resultBean;
         }

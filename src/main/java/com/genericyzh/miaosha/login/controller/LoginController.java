@@ -1,15 +1,13 @@
 package com.genericyzh.miaosha.login.controller;
 
-import com.genericyzh.miaosha.login.model.Token;
 import com.genericyzh.miaosha.login.model.query.LoginQuery;
 import com.genericyzh.miaosha.redis.key.MiaoshaUserKey;
-import com.genericyzh.miaosha.user.model.vo.UserVO;
 import com.genericyzh.miaosha.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -39,13 +37,12 @@ public class LoginController {
         return "login";
     }
 
-    @RequestMapping("do_login")
+    @RequestMapping(value = "do_login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Token login(HttpServletResponse response, LoginQuery loginQuery) {
-        // Spring MVC对于String的返回类型即使使用了@ResponseBody，Content-Type会变成text/html;目前没找到好的解决办法，只好封装一个类先，而且这样输出文档时也更加好
+    public String login(HttpServletResponse response, LoginQuery loginQuery) {
         String token = userService.login(loginQuery);
         addCookie(response, token);
-        return new Token(token);
+        return token;
     }
 
     private void addCookie(HttpServletResponse response, String token) {
