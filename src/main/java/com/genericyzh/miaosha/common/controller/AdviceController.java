@@ -27,7 +27,7 @@ public class AdviceController implements ResponseBodyAdvice {
     public ResultBean handlerError(BusinessException e) {
         ResultBean.Builder builder = new ResultBean.Builder();
         ResultBean resultBean = builder.setCode(ResultCode.FAIL).setMessage(e.getMessage()).build();
-        outputLog(e);
+        outputInfoLog(e);
         return resultBean;
     }
 
@@ -35,7 +35,7 @@ public class AdviceController implements ResponseBodyAdvice {
     public ResultBean handlerError(Exception e) {
         ResultBean.Builder builder = new ResultBean.Builder();
         ResultBean resultBean = builder.setCode(ResultCode.FAIL).setMessage(e.getMessage()).build();
-        outputLog(e);
+        outputErrorLog(e);
         return resultBean;
     }
 
@@ -43,15 +43,19 @@ public class AdviceController implements ResponseBodyAdvice {
     public ResultBean handleError1(MultipartException e, RedirectAttributes redirectAttributes) {
         ResultBean.Builder builder = new ResultBean.Builder();
         ResultBean resultBean = builder.setCode(ResultCode.FAIL).setMessage(e.getMessage()).build();
-        outputLog(e);
+        outputErrorLog(e);
         return resultBean;
     }
 
-    private void outputLog(Exception e) {
-        LOGGER.error("\n>>>>>>  AdviceController::outputLog()\n" +
-                ">>>>>>  params::e = [{}]\n" +
-                ">>>>>>  错误栈:\n", e);
-//        LOGGER.error("", e);
+    private void outputInfoLog(Exception e) {
+        LOGGER.info("", e);
+    }
+
+    private void outputErrorLog(Exception e) {
+//        LOGGER.error("\n>>>>>>  AdviceController::outputErrorLog()\n" +
+//                ">>>>>>  params::e = [{}]\n" +
+//                ">>>>>>  错误栈:\n", e);
+        LOGGER.error("", e);
     }
 
     @Override
@@ -63,7 +67,6 @@ public class AdviceController implements ResponseBodyAdvice {
     public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (!(body instanceof ResultBean)) {
             ResultBean resultBean = new ResultBean.Builder().buildOK(body);
-            //因为handler处理类的返回类型是String，为了保证一致性，这里需要将ResultBean转回去
             if (body instanceof String) {
                 return body;
             }

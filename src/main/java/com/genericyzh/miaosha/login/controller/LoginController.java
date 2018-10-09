@@ -36,7 +36,6 @@ public class LoginController {
 
     @RequestMapping("/to_login")
     public String toLogin() {
-        LOGGER.info("进入了");
         return "login";
     }
 
