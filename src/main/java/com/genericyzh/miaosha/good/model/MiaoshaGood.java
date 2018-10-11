@@ -1,8 +1,8 @@
-package com.genericyzh.miaosha.good.model.vo;
+package com.genericyzh.miaosha.good.model;
 
 import java.util.Date;
 
-public class GoodVO {
+public class MiaoshaGood {
     private Long id;
     private String goodName;
     private String goodImg;

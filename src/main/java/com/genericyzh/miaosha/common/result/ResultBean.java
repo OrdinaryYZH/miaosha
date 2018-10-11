@@ -139,46 +139,48 @@ public class ResultBean<T> implements Serializable {
         }
 
 
-        public ResultBean buildOK() {
+        public static ResultBean buildOK() {
             return buildOK(null, ResultCode.SUCCESS.message());
         }
 
-        public ResultBean buildOK(String message) {
+        public static ResultBean buildOK(String message) {
             return buildOK(null, message);
         }
 
-        public ResultBean buildOK(T data) {
+        public static <R> ResultBean buildOK(R data) {
             return buildOK(data, ResultCode.SUCCESS.message());
         }
 
-        public ResultBean buildOKWithData(T data) {
+        public static <R> ResultBean buildOKWithData(R data) {
             return buildOK(data, ResultCode.SUCCESS.message());
         }
 
-        public ResultBean buildOK(T data, String message) {
-            this.setCode(ResultCode.SUCCESS)
+        public static <R> ResultBean buildOK(R data, String message) {
+            Builder builder = new Builder();
+            builder.setCode(ResultCode.SUCCESS)
                     .setData(data)
                     .setMessage(message);
-            return new ResultBean(this.code, this.message, this.developerMessage, this.data);
+            return new ResultBean(builder.code, builder.message, builder.developerMessage, builder.data);
         }
 
-        public ResultBean buildFAIL() {
+        public static <R> ResultBean buildFAIL() {
             return buildFAIL(null, null);
         }
 
-        public ResultBean buildFAIL(T data) {
+        public static <R> ResultBean buildFAIL(R data) {
             return buildFAIL(data, null);
         }
 
-        public ResultBean buildFAIL(String message) {
+        public static <R> ResultBean buildFAIL(String message) {
             return buildFAIL(null, message);
         }
 
-        public ResultBean buildFAIL(T data, String message) {
-            this.setCode(ResultCode.FAIL.code())
+        public static <R> ResultBean buildFAIL(R data, String message) {
+            Builder builder = new Builder();
+            builder.setCode(ResultCode.FAIL.code())
                     .setData(data)
                     .setMessage(message);
-            return new ResultBean(this.code, this.message, this.developerMessage, this.data);
+            return new ResultBean(builder.code, builder.message, builder.developerMessage, builder.data);
         }
 
     }

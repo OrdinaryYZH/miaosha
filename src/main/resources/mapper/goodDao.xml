@@ -35,4 +35,22 @@
         WHERE mg.`good_id` = ${goodId}
     </select>
 
+    <select id="listGoods" resultType="com.genericyzh.miaosha.good.model.MiaoshaGood">
+        SELECT
+            g.id,
+            g.good_name,
+            g.good_img,
+            g.good_price,
+            mg.miaosha_price,
+            mg.stock_count,
+            mg.start_date,
+            mg.end_date
+        FROM
+            miaosha_good mg
+            LEFT JOIN good g
+                ON mg.good_id = g.id
+    </select>
+
+    <select id="getMiaoshaGood" resultType="com.genericyzh.miaosha.good.model.MiaoshaGood"></select>
+
 </mapper>

@@ -1,5 +1,6 @@
 package com.genericyzh.miaosha.good.dao;
 
+import com.genericyzh.miaosha.good.model.MiaoshaGood;
 import com.genericyzh.miaosha.good.model.vo.GoodDetailVO;
 import com.genericyzh.miaosha.good.model.vo.GoodVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -11,6 +12,10 @@ import java.util.List;
 public interface GoodDao {
 
     public List<GoodVO> listGoodsVo();
+
+    List<MiaoshaGood> listGoods();
+
+    MiaoshaGood getMiaoshaGood(long goodsId);
 
     public GoodDetailVO.MiaoshaGoodDetail getGoodsVoByGoodsId(@Param("goodId") long goodId);
 

@@ -30,7 +30,11 @@ public abstract class BasePrefix implements KeyPrefix {
     }
 
     @Override
-    public String appendPrefix(String value) {
-        return this.getPrefix() + SPLIT + value;
+    public String appendPrefix(String... value) {
+        StringBuilder append = new StringBuilder();
+        for (String s : value) {
+            append.append(SPLIT).append(s == null ? "" : s);
+        }
+        return this.getPrefix() + append.toString();
     }
 }

@@ -36,7 +36,7 @@ public class GoodController {
     public String list(HttpServletRequest request, HttpServletResponse response, Model model) {
         model.addAttribute("user", UserContext.getUser());
         //取缓存
-        String cacheHtml = RedisClient.execute(jedis -> jedis.get(GoodKey.getGoodsList.getPrefix()));
+        String cacheHtml = RedisClient.execute(jedis -> jedis.get(GoodKey.goodsList.getPrefix()));
         if (!StringUtils.isEmpty(cacheHtml)) {
             return cacheHtml;
         }
@@ -48,7 +48,7 @@ public class GoodController {
         //手动渲染
         String html = thymeleafViewResolver.getTemplateEngine().process("goods_list", ctx);
         if (!StringUtils.isEmpty(html)) {
-            RedisClient.execute(jedis -> jedis.set(GoodKey.getGoodsList.getPrefix(), html, "nx", "ex", 60));
+            RedisClient.execute(jedis -> jedis.set(GoodKey.goodsList.getPrefix(), html, "nx", "ex", 60));
         }
         return html;
     }
@@ -57,7 +57,7 @@ public class GoodController {
     @ResponseBody
     public GoodDetailVO detail(
             @PathVariable("goodId") long goodId) {
-        GoodDetailVO.MiaoshaGoodDetail goods = goodService.getGoodsVoByGoodsId(goodId);
+        GoodDetailVO.MiaoshaGoodDetail goods = goodService.getMiaoshaGoodDetail(goodId);
         long startAt = goods.getStartDate().getTime();
         long endAt = goods.getEndDate().getTime();
         long now = System.currentTimeMillis();

@@ -18,5 +18,5 @@ public interface KeyPrefix {
      * @param value
      * @return
      */
-    String appendPrefix(String value);
+    String appendPrefix(String... value);
 }
