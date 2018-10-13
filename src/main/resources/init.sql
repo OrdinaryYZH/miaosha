@@ -17,11 +17,11 @@ CREATE TABLE IF NOT EXISTS miaosha_user (
 CREATE TABLE IF NOT EXISTS good (
   id           BIGINT(20) NOT NULL AUTO_INCREMENT
   COMMENT '商品ID',
-  good_name   VARCHAR(16)         DEFAULT NULL
+  good_name    VARCHAR(16)         DEFAULT NULL
   COMMENT '商品名称',
   good_title   VARCHAR(64)         DEFAULT NULL
   COMMENT '商品标题',
-  good_img    VARCHAR(64)         DEFAULT NULL
+  good_img     VARCHAR(64)         DEFAULT NULL
   COMMENT '商品的图片',
   good_deta111 LONGTEXT COMMENT ' 商品的详情介绍 ',
   good_price   DECIMAL(10, 2)      DEFAULT 0.00
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS miaosha_good (
 
 CREATE TABLE IF NOT EXISTS order_info (
   id              BIGINT(20) NOT NULL AUTO_INCREMENT,
-  user_id         BIGINT(20)          DEFAULT NULL
+  user_id         VARCHAR(16)         DEFAULT NULL
   COMMENT '用户ID',
   good_id         BIGINT(20)          DEFAULT NULL
   COMMENT '商品 | D',
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS order_info (
 
 CREATE TABLE IF NOT EXISTS miaosha_order (
   id       BIGINT(20) NOT NULL AUTO_INCREMENT,
-  user_id  BIGINT(20)          DEFAULT NULL
+  user_id  VARCHAR(16)         DEFAULT NULL
   COMMENT 'FBPID',
   order_id BIGINT(20)          DEFAULT NULL
   COMMENT '订单|D',
