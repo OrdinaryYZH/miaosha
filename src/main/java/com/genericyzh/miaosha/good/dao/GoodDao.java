@@ -11,13 +11,13 @@ import java.util.List;
 @Mapper
 public interface GoodDao {
 
-    public List<GoodVO> listGoodsVo();
+     List<GoodVO> listGoodsVo();
 
     List<MiaoshaGood> listGoods();
 
     MiaoshaGood getMiaoshaGood(long goodsId);
 
-    public GoodDetailVO.MiaoshaGoodDetail getGoodsVoByGoodsId(@Param("goodId") long goodId);
+     GoodDetailVO.MiaoshaGoodDetail getGoodsVoByGoodsId(@Param("goodId") long goodId);
 
 //    @Update("update miaosha_goods set stock_count = stock_count - 1 where goods_id = #{goodsId} and stock_count > 0")
 //    public int reduceStock(MiaoshaGoods g);
