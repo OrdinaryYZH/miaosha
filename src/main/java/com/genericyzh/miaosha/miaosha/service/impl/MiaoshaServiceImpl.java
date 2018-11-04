@@ -159,16 +159,16 @@ public class MiaoshaServiceImpl implements MiaoshaService {
         if (over) {
             throw new BusinessException("商品已经秒杀完毕");
         }
+        //判断是否已经秒杀到了
+        MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(user.getId(), goodsId);
+        if (order != null) {
+            throw new BusinessException("不能重复秒杀");
+        }
         //预减库存
         long stock = RedisClient.execute(jedis -> jedis.decr(GoodKey.miaoshaGoodsStock.appendPrefix(String.valueOf(goodsId))));
         if (stock < 0) {
             localOverMap.put(goodsId, true);
             throw new BusinessException("商品已经秒杀完毕");
-        }
-        //判断是否已经秒杀到了
-        MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(user.getId(), goodsId);
-        if (order != null) {
-            throw new BusinessException("不能重复秒杀");
         }
     }
 
