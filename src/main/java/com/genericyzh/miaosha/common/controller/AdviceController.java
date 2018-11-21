@@ -64,11 +64,11 @@ public class AdviceController implements ResponseBodyAdvice {
     @Override
     public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (!(body instanceof ResultBean)) {
-            ResultBean resultBean = new ResultBean.Builder().buildOK(body);
+            ResultBean resultBean = ResultBean.Builder.buildOK(body);
             if (body instanceof String) {
-                if (selectedContentType.equals(MediaType.APPLICATION_JSON_UTF8))
+                if (selectedContentType.equals(MediaType.APPLICATION_JSON_UTF8)) {
                     return JSON.toJSONString(resultBean);
-                else if (selectedContentType.equals(MediaType.TEXT_HTML)) {
+                } else if (selectedContentType.equals(MediaType.TEXT_HTML)) {
                     return body;
                 }
             }

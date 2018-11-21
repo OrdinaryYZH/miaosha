@@ -105,8 +105,13 @@ public class ResultBean<T> implements Serializable {
         private String developerMessage;
         private T data;
 
-        public Builder() {
+        private Builder() {
         }
+
+        public static ResultBean.Builder build() {
+            return new ResultBean.Builder();
+        }
+
 
         public Builder setCode(int code) {
             this.code = code;
