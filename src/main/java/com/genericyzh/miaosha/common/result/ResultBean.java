@@ -29,23 +29,16 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResultBean<T> implements Serializable {
-    private int code;
-    private String message;
-    private String developerMessage;
-    private T data;
+    private final int code;
+    private final String message;
+    private final String developerMessage;
+    private final T data;
 
-    public ResultBean() {
-    }
-
-    public ResultBean(T data) {
-        this.data = data;
-    }
-
-    public ResultBean(int code, String message, String developerMessage, T data) {
-        this.code = code;
-        this.message = message;
-        this.developerMessage = developerMessage;
-        this.data = data;
+    private ResultBean(Builder<T> builder) {
+        this.code = builder.code;
+        this.message = builder.message;
+        this.developerMessage = builder.developerMessage;
+        this.data = builder.data;
     }
 
     public int getCode() {
@@ -105,13 +98,8 @@ public class ResultBean<T> implements Serializable {
         private String developerMessage;
         private T data;
 
-        private Builder() {
+        public Builder() {
         }
-
-        public static ResultBean.Builder build() {
-            return new ResultBean.Builder();
-        }
-
 
         public Builder setCode(int code) {
             this.code = code;
@@ -139,13 +127,21 @@ public class ResultBean<T> implements Serializable {
             return this;
         }
 
+        /**
+         * 方便客户端DIY
+         *
+         * @return
+         */
         public ResultBean build() {
-            return new ResultBean(this.code, this.message, this.developerMessage, this.data);
+            return new ResultBean(this);
         }
 
+        //-------------------------------------------------------------------------
+        // 以下为重叠构造器，参数较少的时候方便调用
+        //-------------------------------------------------------------------------
 
         public static ResultBean buildOK() {
-            return buildOK(null, ResultCode.SUCCESS.message());
+            return buildOK(ResultCode.SUCCESS.message());
         }
 
         public static ResultBean buildOK(String message) {
@@ -153,39 +149,45 @@ public class ResultBean<T> implements Serializable {
         }
 
         public static <R> ResultBean buildOK(R data) {
-            return buildOK(data, ResultCode.SUCCESS.message());
+            return buildOK(ResultCode.SUCCESS.message(), data);
         }
 
-        public static <R> ResultBean buildOKWithData(R data) {
-            return buildOK(data, ResultCode.SUCCESS.message());
+        public static <R> ResultBean buildOK(String message, R data) {
+            return buildOK(message, data, null);
         }
 
-        public static <R> ResultBean buildOK(R data, String message) {
+        public static <R> ResultBean buildOK(String message, R data, String developerMessage) {
             Builder builder = new Builder();
             builder.setCode(ResultCode.SUCCESS)
                     .setData(data)
-                    .setMessage(message);
-            return new ResultBean(builder.code, builder.message, builder.developerMessage, builder.data);
+                    .setMessage(message)
+                    .setDeveloperMessage(developerMessage);
+            return new ResultBean(builder);
         }
 
         public static <R> ResultBean buildFAIL() {
-            return buildFAIL(null, null);
-        }
-
-        public static <R> ResultBean buildFAIL(R data) {
-            return buildFAIL(data, null);
+            return buildFAIL(ResultCode.FAIL.message());
         }
 
         public static <R> ResultBean buildFAIL(String message) {
             return buildFAIL(null, message);
         }
 
-        public static <R> ResultBean buildFAIL(R data, String message) {
+        public static <R> ResultBean buildFAIL(R data) {
+            return buildFAIL(ResultCode.FAIL.message(), data);
+        }
+
+        public static <R> ResultBean buildFAIL(String message, R data) {
+            return buildFAIL(message, data, null);
+        }
+
+        public static <R> ResultBean buildFAIL(String message, R data, String developerMessage) {
             Builder builder = new Builder();
             builder.setCode(ResultCode.FAIL.code())
                     .setData(data)
-                    .setMessage(message);
-            return new ResultBean(builder.code, builder.message, builder.developerMessage, builder.data);
+                    .setMessage(message)
+                    .setDeveloperMessage(developerMessage);
+            return new ResultBean(builder);
         }
 
     }

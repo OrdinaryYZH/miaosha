@@ -3,7 +3,6 @@ package com.genericyzh.miaosha.common.controller;
 import com.alibaba.fastjson.JSON;
 import com.genericyzh.miaosha.common.exception.BusinessException;
 import com.genericyzh.miaosha.common.result.ResultBean;
-import com.genericyzh.miaosha.common.result.ResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
@@ -26,24 +25,21 @@ public class AdviceController implements ResponseBodyAdvice {
 
     @ExceptionHandler(BusinessException.class)
     public ResultBean handlerError(BusinessException e) {
-        ResultBean.Builder builder = new ResultBean.Builder();
-        ResultBean resultBean = builder.setCode(ResultCode.FAIL).setMessage(e.getMessage()).build();
+        ResultBean resultBean = ResultBean.Builder.buildFAIL(e.getMessage());
         outputInfoLog(e);
         return resultBean;
     }
 
     @ExceptionHandler(Exception.class)
     public ResultBean handlerError(Exception e) {
-        ResultBean.Builder builder = new ResultBean.Builder();
-        ResultBean resultBean = builder.setCode(ResultCode.FAIL).setMessage(e.getMessage()).build();
+        ResultBean resultBean = ResultBean.Builder.buildFAIL(e.getMessage());
         outputErrorLog(e);
         return resultBean;
     }
 
     @ExceptionHandler(MultipartException.class)
     public ResultBean handleError1(MultipartException e, RedirectAttributes redirectAttributes) {
-        ResultBean.Builder builder = new ResultBean.Builder();
-        ResultBean resultBean = builder.setCode(ResultCode.FAIL).setMessage(e.getMessage()).build();
+        ResultBean resultBean = ResultBean.Builder.buildFAIL(e.getMessage());
         outputErrorLog(e);
         return resultBean;
     }

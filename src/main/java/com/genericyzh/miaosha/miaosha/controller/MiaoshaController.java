@@ -81,7 +81,7 @@ public class MiaoshaController {
         mm.setUser(UserContext.getUser());
         mm.setGoodsId(goodsId);
         sender.sendMiaoshaMessage(mm);
-        return ResultBean.Builder.buildOK(1, "排队中");//排队中
+        return ResultBean.Builder.buildOK("排队中", 1);//排队中
     }
 
 
