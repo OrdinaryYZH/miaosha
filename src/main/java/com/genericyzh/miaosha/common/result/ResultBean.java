@@ -57,6 +57,10 @@ public class ResultBean<T> implements Serializable {
         return data;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -93,8 +97,8 @@ public class ResultBean<T> implements Serializable {
 
     public static class Builder<T> {
 
-        private int code;
-        private String message;
+        private int code = ResultCode.SUCCESS.code();
+        private String message = ResultCode.SUCCESS.message();
         private String developerMessage;
         private T data;
 
@@ -136,58 +140,56 @@ public class ResultBean<T> implements Serializable {
             return new ResultBean(this);
         }
 
+        public ResultBean buildOK() {
+            return build();
+        }
+
+        public ResultBean buildOK(String message) {
+            this.setMessage(message);
+            return build();
+        }
+
+        public ResultBean buildOK(T data) {
+            this.setData(data);
+            return build();
+        }
+
+        public ResultBean buildOK(String message, T data) {
+            this.setMessage(message);
+            this.setData(data);
+            return build();
+        }
+
         //-------------------------------------------------------------------------
-        // 以下为重叠构造器，参数较少的时候方便调用
+        // 以下为重叠构造器，一层一层的调用
         //-------------------------------------------------------------------------
 
-        public static ResultBean buildOK() {
-            return buildOK(ResultCode.SUCCESS.message());
-        }
-
-        public static ResultBean buildOK(String message) {
-            return buildOK(null, message);
-        }
-
-        public static <R> ResultBean buildOK(R data) {
-            return buildOK(ResultCode.SUCCESS.message(), data);
-        }
-
-        public static <R> ResultBean buildOK(String message, R data) {
-            return buildOK(message, data, null);
-        }
-
-        public static <R> ResultBean buildOK(String message, R data, String developerMessage) {
-            Builder builder = new Builder();
-            builder.setCode(ResultCode.SUCCESS)
-                    .setData(data)
-                    .setMessage(message)
-                    .setDeveloperMessage(developerMessage);
-            return new ResultBean(builder);
-        }
-
-        public static <R> ResultBean buildFAIL() {
+        public ResultBean buildFAIL() {
             return buildFAIL(ResultCode.FAIL.message());
         }
 
-        public static <R> ResultBean buildFAIL(String message) {
-            return buildFAIL(null, message);
+        public ResultBean buildFAIL(String message) {
+            return buildFAIL(message, null);
         }
 
-        public static <R> ResultBean buildFAIL(R data) {
+        public ResultBean buildFAIL(T data) {
             return buildFAIL(ResultCode.FAIL.message(), data);
         }
 
-        public static <R> ResultBean buildFAIL(String message, R data) {
+        public ResultBean buildFAIL(String message, T data) {
             return buildFAIL(message, data, null);
         }
 
-        public static <R> ResultBean buildFAIL(String message, R data, String developerMessage) {
-            Builder builder = new Builder();
-            builder.setCode(ResultCode.FAIL.code())
+        public ResultBean buildFAIL(String message, T data, String developerMessage) {
+            return build(ResultCode.FAIL.code(), message, data, developerMessage);
+        }
+
+        public ResultBean build(int code, String message, T data, String developerMessage) {
+            this.setCode(code)
                     .setData(data)
                     .setMessage(message)
                     .setDeveloperMessage(developerMessage);
-            return new ResultBean(builder);
+            return new ResultBean(this);
         }
 
     }

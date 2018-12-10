@@ -73,7 +73,7 @@ public class MiaoshaController {
             @RequestParam("goodsId") long goodsId,
             @PathVariable("path") String path) {
         if (goodsId < 0) {
-            ResultBean.Builder.buildFAIL("goodsId参数格式不对");
+            ResultBean.builder().buildFAIL("goodsId参数格式不对");
         }
         miaoshaService.checkBeforeMiaosha(goodsId, path);
         //入队
@@ -81,7 +81,7 @@ public class MiaoshaController {
         mm.setUser(UserContext.getUser());
         mm.setGoodsId(goodsId);
         sender.sendMiaoshaMessage(mm);
-        return ResultBean.Builder.buildOK("排队中", 1);//排队中
+        return ResultBean.builder().buildOK("排队中", 1);//排队中
     }
 
 

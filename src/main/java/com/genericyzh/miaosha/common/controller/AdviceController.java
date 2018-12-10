@@ -25,21 +25,21 @@ public class AdviceController implements ResponseBodyAdvice {
 
     @ExceptionHandler(BusinessException.class)
     public ResultBean handlerError(BusinessException e) {
-        ResultBean resultBean = ResultBean.Builder.buildFAIL(e.getMessage());
+        ResultBean resultBean = ResultBean.builder().buildFAIL(e.getMessage());
         outputInfoLog(e);
         return resultBean;
     }
 
     @ExceptionHandler(Exception.class)
     public ResultBean handlerError(Exception e) {
-        ResultBean resultBean = ResultBean.Builder.buildFAIL(e.getMessage());
+        ResultBean resultBean = ResultBean.builder().buildFAIL(e.getMessage());
         outputErrorLog(e);
         return resultBean;
     }
 
     @ExceptionHandler(MultipartException.class)
     public ResultBean handleError1(MultipartException e, RedirectAttributes redirectAttributes) {
-        ResultBean resultBean = ResultBean.Builder.buildFAIL(e.getMessage());
+        ResultBean resultBean = ResultBean.builder().buildFAIL(e.getMessage());
         outputErrorLog(e);
         return resultBean;
     }
@@ -60,7 +60,7 @@ public class AdviceController implements ResponseBodyAdvice {
     @Override
     public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (!(body instanceof ResultBean)) {
-            ResultBean resultBean = ResultBean.Builder.buildOK(body);
+            ResultBean resultBean = ResultBean.builder().buildOK(body);
             if (body instanceof String) {
                 if (selectedContentType.equals(MediaType.APPLICATION_JSON_UTF8)) {
                     return JSON.toJSONString(resultBean);
