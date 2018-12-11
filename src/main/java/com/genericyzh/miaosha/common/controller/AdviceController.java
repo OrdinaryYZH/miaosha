@@ -12,9 +12,10 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import static com.genericyzh.miaosha.common.result.ResultCode.FAIL;
+import static com.genericyzh.miaosha.common.result.ResultCode.SUCCESS;
 
 /**
  * @author genericyzh
@@ -25,21 +26,14 @@ public class AdviceController implements ResponseBodyAdvice {
 
     @ExceptionHandler(BusinessException.class)
     public ResultBean handlerError(BusinessException e) {
-        ResultBean resultBean = ResultBean.builder().buildFAIL(e.getMessage());
+        ResultBean resultBean = ResultBean.builder(FAIL).setMessage(e.getMessage()).build();
         outputInfoLog(e);
         return resultBean;
     }
 
     @ExceptionHandler(Exception.class)
     public ResultBean handlerError(Exception e) {
-        ResultBean resultBean = ResultBean.builder().buildFAIL(e.getMessage());
-        outputErrorLog(e);
-        return resultBean;
-    }
-
-    @ExceptionHandler(MultipartException.class)
-    public ResultBean handleError1(MultipartException e, RedirectAttributes redirectAttributes) {
-        ResultBean resultBean = ResultBean.builder().buildFAIL(e.getMessage());
+        ResultBean resultBean = ResultBean.builder(FAIL).setMessage(e.getMessage()).build();
         outputErrorLog(e);
         return resultBean;
     }
@@ -60,8 +54,9 @@ public class AdviceController implements ResponseBodyAdvice {
     @Override
     public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (!(body instanceof ResultBean)) {
-            ResultBean resultBean = ResultBean.builder().buildOK(body);
+            ResultBean resultBean = ResultBean.builder(SUCCESS).setData(body).build();
             if (body instanceof String) {
+                // todo 这里貌似可以去掉？
                 if (selectedContentType.equals(MediaType.APPLICATION_JSON_UTF8)) {
                     return JSON.toJSONString(resultBean);
                 } else if (selectedContentType.equals(MediaType.TEXT_HTML)) {

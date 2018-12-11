@@ -4,6 +4,7 @@ import com.genericyzh.miaosha.access.AccessLimit;
 import com.genericyzh.miaosha.access.UserContext;
 import com.genericyzh.miaosha.common.exception.BusinessException;
 import com.genericyzh.miaosha.common.result.ResultBean;
+import com.genericyzh.miaosha.common.result.ResultCode;
 import com.genericyzh.miaosha.miaosha.service.MiaoshaService;
 import com.genericyzh.miaosha.order.service.OrderService;
 import com.genericyzh.miaosha.rabbitmq.MQSender;
@@ -73,7 +74,7 @@ public class MiaoshaController {
             @RequestParam("goodsId") long goodsId,
             @PathVariable("path") String path) {
         if (goodsId < 0) {
-            ResultBean.builder().buildFAIL("goodsId参数格式不对");
+            throw new IllegalArgumentException("goodsId参数格式不对");
         }
         miaoshaService.checkBeforeMiaosha(goodsId, path);
         //入队
@@ -81,7 +82,7 @@ public class MiaoshaController {
         mm.setUser(UserContext.getUser());
         mm.setGoodsId(goodsId);
         sender.sendMiaoshaMessage(mm);
-        return ResultBean.builder().buildOK("排队中", 1);//排队中
+        return ResultBean.builder(ResultCode.SUCCESS).set("排队中", 1).build();//排队中
     }
 
 
