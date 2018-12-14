@@ -20,6 +20,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static com.genericyzh.miaosha.common.result.ResultCode.SUCCESS;
+
 /**
  * @author genericyzh
  * @date 2018/10/10 20:25
@@ -82,7 +84,7 @@ public class MiaoshaController {
         mm.setUser(UserContext.getUser());
         mm.setGoodsId(goodsId);
         sender.sendMiaoshaMessage(mm);
-        return ResultBean.builder(ResultCode.SUCCESS).set("排队中", 1).build();//排队中
+        return ResultBean.builder(SUCCESS).set("排队中", 1).build();//排队中
     }
 
 
