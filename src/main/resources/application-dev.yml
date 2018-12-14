@@ -30,6 +30,13 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     maxActive: 1000
     username: root
+  #rabbitmq
+  rabbitmq:
+    username: guest
+    password: guest
+    port: 5672
+    virtual-host: /
+    host: 192.168.0.111
 #redis
 redis:
   host: 192.168.0.111
@@ -43,12 +50,5 @@ redis:
 #日志
 logging:
   config: classpath:config/log4j2-dev.xml
-#rabbitmq
-spring:
-  rabbitmq:
-    username: guest
-    password: guest
-    port: 5672
-    virtual-host: /
-    host: 192.168.0.102
+
 
