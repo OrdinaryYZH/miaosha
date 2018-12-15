@@ -5,14 +5,16 @@ import com.genericyzh.miaosha.miaosha.model.MiaoshaOrder;
 import com.genericyzh.miaosha.order.dao.OrderDao;
 import com.genericyzh.miaosha.order.model.OrderInfo;
 import com.genericyzh.miaosha.order.service.OrderService;
-import com.genericyzh.miaosha.redis.RedisClient;
 import com.genericyzh.miaosha.redis.key.OrderKey;
 import com.genericyzh.miaosha.user.model.UserInfo;
 import com.genericyzh.miaosha.utils.SerializeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+
+import static com.genericyzh.miaosha.redis.RedisClient.execute;
 
 /**
  * @author genericyzh
@@ -26,19 +28,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public MiaoshaOrder getMiaoshaOrderByUserIdGoodsId(String userId, long goodsId) {
-        MiaoshaOrder miaoshaOrder = RedisClient.execute(jedis -> jedis.get(OrderKey.MiaoshaOrderByUidGid.appendPrefix(userId, String.valueOf(goodsId))),
+        MiaoshaOrder miaoshaOrder = execute(jedis -> jedis.get(OrderKey.MiaoshaOrderByUidGid.appendPrefix(userId, String.valueOf(goodsId))),
                 MiaoshaOrder.class);
         return miaoshaOrder;
     }
 
     @Override
     public OrderInfo getOrderById(long orderId) {
-        return null;
+        return orderDao.getOrderById(orderId);
     }
 
+    @Transactional
     @Override
     public OrderInfo createOrder(UserInfo user, MiaoshaGood miaoshaGood) {
-        // todo 对miaoshaGood进行校验
+        // todo 对miaoshaGood进行校验？？？
 
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreateDate(new Date());
@@ -57,13 +60,14 @@ public class OrderServiceImpl implements OrderService {
         miaoshaOrder.setUserId(user.getId());
         orderDao.insertMiaoshaOrder(miaoshaOrder);
 
-        RedisClient.execute(jedis -> jedis.set(OrderKey.MiaoshaOrderByUidGid.appendPrefix(user.getId(), String.valueOf(miaoshaGood.getId()))
+        execute(jedis -> jedis.set(OrderKey.MiaoshaOrderByUidGid.appendPrefix(user.getId(), String.valueOf(miaoshaGood.getId()))
                 , SerializeUtil.beanToString(miaoshaOrder)));
         return orderInfo;
     }
 
     @Override
     public void deleteOrders() {
-
+        orderDao.deleteOrders();
+        orderDao.deleteMiaoshaOrders();
     }
 }

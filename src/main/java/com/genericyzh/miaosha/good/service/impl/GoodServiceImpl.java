@@ -1,6 +1,7 @@
 package com.genericyzh.miaosha.good.service.impl;
 
 import com.genericyzh.miaosha.good.dao.GoodDao;
+import com.genericyzh.miaosha.good.model.Good;
 import com.genericyzh.miaosha.good.model.MiaoshaGood;
 import com.genericyzh.miaosha.good.model.vo.GoodDetailVO;
 import com.genericyzh.miaosha.good.model.vo.GoodVO;
@@ -16,15 +17,22 @@ public class GoodServiceImpl implements GoodService {
     @Autowired
     GoodDao goodDao;
 
+    @Override
     public List<GoodVO> listGoodsVo() {
         return goodDao.listGoodsVo();
     }
 
     @Override
-    public List<MiaoshaGood> listGoods() {
-        return null;
+    public List<Good> listGoods() {
+        return goodDao.listGoods();
     }
 
+    @Override
+    public List<MiaoshaGood> listMiaoshaGoods() {
+        return goodDao.listMiaoshaGoods();
+    }
+
+    @Override
     public GoodDetailVO.MiaoshaGoodDetail getMiaoshaGoodDetail(long goodsId) {
         return goodDao.getGoodsVoByGoodsId(goodsId);
     }
@@ -35,12 +43,23 @@ public class GoodServiceImpl implements GoodService {
     }
 
     @Override
-    public boolean reduceStock(long goodId) {
-        return false;
+    public Good getGood(long goodsId) {
+        return null;
     }
 
-    public void resetStock(List<GoodVO> goodsList) {
-        return;
+    @Override
+    public boolean reduceStock(long goodId) {
+        MiaoshaGood g = new MiaoshaGood();
+        g.setId(goodId);
+        int ret = goodDao.reduceStock(g);
+        return ret > 0;
+    }
+
+    @Override
+    public void resetStock(List<MiaoshaGood> goodsList) {
+        for (MiaoshaGood miaoshaGood : goodsList) {
+            goodDao.resetStock(miaoshaGood);
+        }
     }
 
 

@@ -6,20 +6,26 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 /**
  * @author genericyzh
  * @date 2018/10/2 16:08
  */
-@Component
+@Component("RedisPoolFactory")
 public class RedisPoolFactory {
 
     private static RedisPoolFactory redisPoolClient;
 
-    private RedisPoolFactory() {
-        // 不能这么使用，因为这时的redisConfig还没实例化
-        //initPool();
+//    private RedisPoolFactory() {
+//        // 不能这么使用，因为这时的redisConfig还没实例化
+//        //initPool();
+//        RedisPoolFactory.redisPoolClient = this;
+//    }
+
+    @PostConstruct
+    private void init() {
         RedisPoolFactory.redisPoolClient = this;
     }
 

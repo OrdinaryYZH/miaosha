@@ -35,7 +35,11 @@
         WHERE mg.`good_id` = ${goodId}
     </select>
 
-    <select id="listGoods" resultType="com.genericyzh.miaosha.good.model.MiaoshaGood">
+    <select id="listGoods" resultType="com.genericyzh.miaosha.good.model.Good">
+
+    </select>
+
+    <select id="listMiaoshaGoods" resultType="com.genericyzh.miaosha.good.model.MiaoshaGood">
         SELECT
             g.id,
             g.good_name,
@@ -52,5 +56,7 @@
     </select>
 
     <select id="getMiaoshaGood" resultType="com.genericyzh.miaosha.good.model.MiaoshaGood"></select>
+
+    <select id="getGood" resultType="com.genericyzh.miaosha.good.model.Good"></select>
 
 </mapper>

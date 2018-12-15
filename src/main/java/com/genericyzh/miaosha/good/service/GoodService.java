@@ -12,15 +12,24 @@ public interface GoodService {
 
     List<GoodVO> listGoodsVo();
 
-    List<MiaoshaGood> listGoods();
+    List<Good> listGoods();
+
+    List<MiaoshaGood> listMiaoshaGoods();
 
     GoodDetailVO.MiaoshaGoodDetail getMiaoshaGoodDetail(long goodsId);
 
     MiaoshaGood getMiaoshaGood(long goodsId);
 
+    Good getGood(long goodsId);
+
     boolean reduceStock(long goodId);
 
-    void resetStock(List<GoodVO> goodsList);
+    /**
+     * 设置秒杀商品库存
+     *
+     * @param goodsList
+     */
+    void resetStock(List<MiaoshaGood> goodsList);
 
 
 }

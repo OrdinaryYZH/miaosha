@@ -1,9 +1,11 @@
 package com.genericyzh.miaosha.miaosha.service;
 
+import com.genericyzh.miaosha.good.model.MiaoshaGood;
 import com.genericyzh.miaosha.order.model.OrderInfo;
 import com.genericyzh.miaosha.user.model.UserInfo;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * @author genericyzh
@@ -38,5 +40,7 @@ public interface MiaoshaService {
     void checkBeforeMiaosha(long goodsId, String path);
 
     OrderInfo miaosha(String message);
+
+    void reset(List<MiaoshaGood> goodsList);
 
 }

@@ -1,6 +1,7 @@
 package com.genericyzh.miaosha.redis;
 
 import com.genericyzh.miaosha.utils.SerializeUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
 import java.util.function.Function;

@@ -4,23 +4,31 @@ import com.genericyzh.miaosha.access.AccessLimit;
 import com.genericyzh.miaosha.access.UserContext;
 import com.genericyzh.miaosha.common.exception.BusinessException;
 import com.genericyzh.miaosha.common.result.ResultBean;
-import com.genericyzh.miaosha.common.result.ResultCode;
+import com.genericyzh.miaosha.good.model.MiaoshaGood;
+import com.genericyzh.miaosha.good.service.GoodService;
 import com.genericyzh.miaosha.miaosha.service.MiaoshaService;
 import com.genericyzh.miaosha.order.service.OrderService;
 import com.genericyzh.miaosha.rabbitmq.MQSender;
 import com.genericyzh.miaosha.rabbitmq.MiaoshaMessage;
+import com.genericyzh.miaosha.redis.key.GoodKey;
+import com.genericyzh.miaosha.redis.key.MiaoshaKey;
+import com.genericyzh.miaosha.redis.key.OrderKey;
 import com.genericyzh.miaosha.user.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import static com.genericyzh.miaosha.common.result.ResultCode.SUCCESS;
+import static com.genericyzh.miaosha.redis.RedisClient.execute;
 
 /**
  * @author genericyzh
@@ -31,10 +39,13 @@ import static com.genericyzh.miaosha.common.result.ResultCode.SUCCESS;
 public class MiaoshaController {
 
     @Autowired
-    private MiaoshaService miaoshaService;
+    MiaoshaService miaoshaService;
 
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    GoodService goodService;
 
     @Autowired
     MQSender sender;
@@ -85,6 +96,30 @@ public class MiaoshaController {
         mm.setGoodsId(goodsId);
         sender.sendMiaoshaMessage(mm);
         return ResultBean.builder(SUCCESS).set("排队中", 1).build();//排队中
+    }
+
+    @RequestMapping(value = "/reset", method = RequestMethod.GET)
+    @ResponseBody
+    public Boolean reset() {
+        List<MiaoshaGood> goods = goodService.listMiaoshaGoods();
+        for (MiaoshaGood good : goods) {
+            good.setStockCount(10);
+            execute(jedis -> jedis.set(GoodKey.miaoshaGoodsStock.appendPrefix(good.getId().toString()), "10"));
+//            redisService.set(GoodsKey.getMiaoshaGoodsStock, "" + good.getId(), 10);
+        }
+        ScanParams scanParams = new ScanParams();
+        scanParams.match(OrderKey.MiaoshaOrderByUidGid.getPrefix() + "*");
+        scanParams.count(1000);
+        ScanResult<String> result = execute(jedis -> jedis.scan("1", scanParams));
+        execute(jedis -> jedis.del(result.getResult().toArray(new String[result.getResult().size()])));
+
+        scanParams.match(MiaoshaKey.isGoodsOver + "*");
+        scanParams.count(1000);
+        ScanResult<String> result2 = execute(jedis -> jedis.scan("1", scanParams));
+        execute(jedis -> jedis.del(result2.getResult().toArray(new String[result2.getResult().size()])));
+
+        miaoshaService.reset(goods);
+        return true;
     }
 
 

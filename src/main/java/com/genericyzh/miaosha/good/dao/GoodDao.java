@@ -1,28 +1,34 @@
 package com.genericyzh.miaosha.good.dao;
 
+import com.genericyzh.miaosha.good.model.Good;
 import com.genericyzh.miaosha.good.model.MiaoshaGood;
 import com.genericyzh.miaosha.good.model.vo.GoodDetailVO;
 import com.genericyzh.miaosha.good.model.vo.GoodVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
 @Mapper
 public interface GoodDao {
 
-     List<GoodVO> listGoodsVo();
+    List<GoodVO> listGoodsVo();
 
-    List<MiaoshaGood> listGoods();
+    List<Good> listGoods();
+
+    List<MiaoshaGood> listMiaoshaGoods();
 
     MiaoshaGood getMiaoshaGood(long goodsId);
 
-     GoodDetailVO.MiaoshaGoodDetail getGoodsVoByGoodsId(@Param("goodId") long goodId);
+    Good getGood(long goodsId);
 
-//    @Update("update miaosha_goods set stock_count = stock_count - 1 where goods_id = #{goodsId} and stock_count > 0")
-//    public int reduceStock(MiaoshaGoods g);
-//
-//    @Update("update miaosha_goods set stock_count = #{stockCount} where goods_id = #{goodsId}")
-//    public int resetStock(MiaoshaGoods g);
+    GoodDetailVO.MiaoshaGoodDetail getGoodsVoByGoodsId(@Param("goodId") long goodId);
+
+    @Update("update miaosha_goods set stock_count = stock_count - 1 where goods_id = #{goodsId} and stock_count > 0")
+    int reduceStock(MiaoshaGood g);
+
+    @Update("update miaosha_goods set stock_count = #{stockCount} where goods_id = #{goodsId}")
+    int resetStock(MiaoshaGood g);
 
 }
