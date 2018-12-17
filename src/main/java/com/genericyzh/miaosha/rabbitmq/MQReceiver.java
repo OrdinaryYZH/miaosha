@@ -1,15 +1,20 @@
 package com.genericyzh.miaosha.rabbitmq;
 
-import com.genericyzh.miaosha.good.service.GoodService;
+import com.genericyzh.miaosha.goods.service.GoodsService;
 import com.genericyzh.miaosha.miaosha.service.MiaoshaService;
 import com.genericyzh.miaosha.order.service.OrderService;
-import com.genericyzh.miaosha.user.model.UserInfo;
-import com.genericyzh.miaosha.utils.SerializeUtil;
+import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.Headers;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class MQReceiver {
@@ -17,7 +22,7 @@ public class MQReceiver {
     private static Logger log = LoggerFactory.getLogger(MQReceiver.class);
 
     @Autowired
-    GoodService goodsService;
+    GoodsService goodsService;
 
     @Autowired
     OrderService orderService;
@@ -26,12 +31,15 @@ public class MQReceiver {
     MiaoshaService miaoshaService;
 
     @RabbitListener(queues = MQConfig.MIAOSHA_QUEUE)
-    public void receive(String message) {
-        log.info("receive message:" + message);
-        MiaoshaMessage mm = SerializeUtil.stringToBean(message, MiaoshaMessage.class);
-        UserInfo user = mm.getUser();
-        long goodId = mm.getGoodsId();
-        miaoshaService.miaosha(message);
+    @RabbitHandler
+    public void receive(@Payload MiaoshaMessage miaoshaMessage, Channel channel, @Headers Map<String, Object> headers) throws Exception {
+        log.info("receive message:" + miaoshaMessage);
+        miaoshaService.miaosha(miaoshaMessage);
+
+        Long deliveryTag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
+        //手工ACK
+        channel.basicAck(deliveryTag, false);
+
     }
 
 //		@RabbitListener(queues=MQConfig.QUEUE)

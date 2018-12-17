@@ -1,12 +1,13 @@
 package com.genericyzh.miaosha.user.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author genericyzh
  * @date 2018/10/5 16:20
  */
-public class UserInfo {
+public class UserInfo implements Serializable {
 
     private String id;
     private String nickname;

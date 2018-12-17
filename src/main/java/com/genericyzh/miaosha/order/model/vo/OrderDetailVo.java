@@ -1,19 +1,19 @@
 package com.genericyzh.miaosha.order.model.vo;
 
 
-import com.genericyzh.miaosha.good.model.Good;
+import com.genericyzh.miaosha.goods.model.Goods;
 import com.genericyzh.miaosha.order.model.OrderInfo;
 
 public class OrderDetailVo {
-    private Good good;
+    private Goods goods;
     private OrderInfo order;
 
-    public Good getGood() {
-        return good;
+    public Goods getGoods() {
+        return goods;
     }
 
-    public void setGood(Good good) {
-        this.good = good;
+    public void setGoods(Goods goods) {
+        this.goods = goods;
     }
 
     public OrderInfo getOrder() {

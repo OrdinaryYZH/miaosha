@@ -1,12 +1,12 @@
-package com.genericyzh.miaosha.good.model;
+package com.genericyzh.miaosha.goods.model.vo;
 
 import java.util.Date;
 
-public class MiaoshaGood {
+public class GoodsVO {
     private Long id;
-    private String goodName;
-    private String goodImg;
-    private String goodPrice;
+    private String goodsName;
+    private String goodsImg;
+    private String goodsPrice;
     private Double miaoshaPrice;
     private Integer stockCount;
     private Date startDate;
@@ -20,28 +20,28 @@ public class MiaoshaGood {
         this.id = id;
     }
 
-    public String getGoodName() {
-        return goodName;
+    public String getGoodsName() {
+        return goodsName;
     }
 
-    public void setGoodName(String goodName) {
-        this.goodName = goodName;
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
     }
 
-    public String getGoodImg() {
-        return goodImg;
+    public String getGoodsImg() {
+        return goodsImg;
     }
 
-    public void setGoodImg(String goodImg) {
-        this.goodImg = goodImg;
+    public void setGoodsImg(String goodsImg) {
+        this.goodsImg = goodsImg;
     }
 
-    public String getGoodPrice() {
-        return goodPrice;
+    public String getGoodsPrice() {
+        return goodsPrice;
     }
 
-    public void setGoodPrice(String goodPrice) {
-        this.goodPrice = goodPrice;
+    public void setGoodsPrice(String goodsPrice) {
+        this.goodsPrice = goodsPrice;
     }
 
     public Double getMiaoshaPrice() {

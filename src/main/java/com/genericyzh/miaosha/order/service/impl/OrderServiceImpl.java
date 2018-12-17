@@ -1,6 +1,6 @@
 package com.genericyzh.miaosha.order.service.impl;
 
-import com.genericyzh.miaosha.good.model.MiaoshaGood;
+import com.genericyzh.miaosha.goods.model.MiaoshaGoods;
 import com.genericyzh.miaosha.miaosha.model.MiaoshaOrder;
 import com.genericyzh.miaosha.order.dao.OrderDao;
 import com.genericyzh.miaosha.order.model.OrderInfo;
@@ -40,27 +40,27 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public OrderInfo createOrder(UserInfo user, MiaoshaGood miaoshaGood) {
+    public OrderInfo createOrder(UserInfo user, MiaoshaGoods miaoshaGoods) {
         // todo 对miaoshaGood进行校验？？？
 
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreateDate(new Date());
         orderInfo.setDeliveryAddrId(0L);
         orderInfo.setGoodsCount(1);
-        orderInfo.setGoodsId(miaoshaGood.getId());
-        orderInfo.setGoodsName(miaoshaGood.getGoodName());
-        orderInfo.setGoodsPrice(miaoshaGood.getMiaoshaPrice());
+        orderInfo.setGoodsId(miaoshaGoods.getId());
+        orderInfo.setGoodsName(miaoshaGoods.getGoodsName());
+        orderInfo.setGoodsPrice(miaoshaGoods.getMiaoshaPrice());
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setUserId(user.getId());
         orderDao.insert(orderInfo);
         MiaoshaOrder miaoshaOrder = new MiaoshaOrder();
-        miaoshaOrder.setGoodsId(miaoshaGood.getId());
+        miaoshaOrder.setGoodsId(miaoshaGoods.getId());
         miaoshaOrder.setOrderId(orderInfo.getId());
         miaoshaOrder.setUserId(user.getId());
         orderDao.insertMiaoshaOrder(miaoshaOrder);
 
-        execute(jedis -> jedis.set(OrderKey.MiaoshaOrderByUidGid.appendPrefix(user.getId(), String.valueOf(miaoshaGood.getId()))
+        execute(jedis -> jedis.set(OrderKey.MiaoshaOrderByUidGid.appendPrefix(user.getId(), String.valueOf(miaoshaGoods.getId()))
                 , SerializeUtil.beanToString(miaoshaOrder)));
         return orderInfo;
     }

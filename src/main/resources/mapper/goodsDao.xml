@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.genericyzh.miaosha.goods.dao.GoodsDao">
+
+    <select id="listGoodsVo" resultType="com.genericyzh.miaosha.goods.model.vo.GoodsVO">
+        SELECT
+            g.id,
+            g.goods_name,
+            g.goods_price,
+            g.goods_img,
+            mg.stock_count,
+            mg.start_date,
+            mg.end_date,
+            mg.miaosha_price
+        FROM
+            miaosha_goods mg
+            LEFT JOIN goods g
+                ON mg.goods_id = g.id
+    </select>
+
+    <select id="listGoods" resultType="com.genericyzh.miaosha.goods.model.Goods">
+
+    </select>
+
+    <select id="listMiaoshaGoods" resultType="com.genericyzh.miaosha.goods.model.MiaoshaGoods">
+        SELECT
+            g.id        goodsId,
+            g.goods_name,
+            g.goods_img,
+            g.goods_price,
+            mg.goods_id id,
+            mg.miaosha_price,
+            mg.stock_count,
+            mg.start_date,
+            mg.end_date
+        FROM
+            miaosha_goods mg
+            LEFT JOIN goods g
+                ON mg.goods_id = g.id
+    </select>
+
+    <select id="getMiaoshaGoods" resultType="com.genericyzh.miaosha.goods.model.MiaoshaGoods">
+        SELECT
+            g.id        goodsId,
+            g.goods_name,
+            g.goods_img,
+            g.goods_price,
+            mg.goods_id id,
+            mg.miaosha_price,
+            mg.stock_count,
+            mg.start_date,
+            mg.end_date
+        FROM
+            miaosha_goods mg
+            LEFT JOIN goods g
+                ON mg.goods_id = g.id
+        WHERE g.id = #{goodsId}
+    </select>
+
+    <select id="getGoods" resultType="com.genericyzh.miaosha.goods.model.Goods">
+        SELECT *
+        FROM
+            goods
+        WHERE goods.`id` = #{goodsId}
+    </select>
+
+    <select id="getGoodsVoByGoodsId"
+            resultType="com.genericyzh.miaosha.goods.model.vo.GoodsDetailVO$MiaoshaGoodsDetail">
+        SELECT
+            goods.id,
+            goods.goods_name,
+            goods.goods_img,
+            goods.goods_price,
+            mg.`start_date`,
+            mg.`end_date`,
+            mg.`miaosha_price`,
+            mg.`stock_count`
+        FROM
+            miaosha_goods mg
+            LEFT JOIN goods
+                ON goods.id = mg.goods_id
+        WHERE mg.`goods_id` = ${goodsId}
+    </select>
+
+</mapper>

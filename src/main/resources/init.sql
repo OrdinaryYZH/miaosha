@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS miaosha_user (
   DEFAULT CHARSET = utf8
   COMMENT '用户表';
 
-CREATE TABLE IF NOT EXISTS good (
+CREATE TABLE IF NOT EXISTS goods (
   id           BIGINT(20) NOT NULL AUTO_INCREMENT
   COMMENT '商品ID',
   good_name    VARCHAR(16)         DEFAULT NULL
@@ -109,5 +109,5 @@ INSERT INTO USER (id, nickname, PASSWORD, salt, head, gmt_create, gmt_modified
    )
   );
 
-INSERT INTO `miaosha`.`good` (`good_name`, `good_title`, `good_img`, `good_deta111`, `good_price`, `good_stock`)
+INSERT INTO `miaosha`.`goods` (`good_name`, `good_title`, `good_img`, `good_deta111`, `good_price`, `good_stock`)
 VALUES ('iPhoneX', 'iPhoneX', 'img/iphonex.png', '超级无敌的iPhoneX来了，快来买咯', '8888', '88')

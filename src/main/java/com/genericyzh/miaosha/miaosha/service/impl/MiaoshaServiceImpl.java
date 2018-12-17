@@ -2,8 +2,8 @@ package com.genericyzh.miaosha.miaosha.service.impl;
 
 import com.genericyzh.miaosha.access.UserContext;
 import com.genericyzh.miaosha.common.exception.BusinessException;
-import com.genericyzh.miaosha.good.model.MiaoshaGood;
-import com.genericyzh.miaosha.good.service.GoodService;
+import com.genericyzh.miaosha.goods.model.MiaoshaGoods;
+import com.genericyzh.miaosha.goods.service.GoodsService;
 import com.genericyzh.miaosha.miaosha.model.MiaoshaOrder;
 import com.genericyzh.miaosha.miaosha.service.MiaoshaService;
 import com.genericyzh.miaosha.order.model.OrderInfo;
@@ -13,7 +13,6 @@ import com.genericyzh.miaosha.redis.key.GoodKey;
 import com.genericyzh.miaosha.redis.key.MiaoshaKey;
 import com.genericyzh.miaosha.user.model.UserInfo;
 import com.genericyzh.miaosha.utils.MD5Util;
-import com.genericyzh.miaosha.utils.SerializeUtil;
 import com.genericyzh.miaosha.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -42,7 +41,7 @@ public class MiaoshaServiceImpl implements MiaoshaService {
     OrderService orderService;
 
     @Autowired
-    GoodService goodService;
+    GoodsService goodsService;
 
     private HashMap<Long, Boolean> localOverMap = new HashMap<>();
 
@@ -52,11 +51,11 @@ public class MiaoshaServiceImpl implements MiaoshaService {
      */
     @PostConstruct
     public void afterPropertiesSet() throws Exception {
-        List<MiaoshaGood> goodVOS = goodService.listMiaoshaGoods();
+        List<MiaoshaGoods> goodVOS = goodsService.listMiaoshaGoods();
         if (goodVOS == null) {
             return;
         }
-        for (MiaoshaGood goods : goodVOS) {
+        for (MiaoshaGoods goods : goodVOS) {
             execute(jedis -> jedis.set(GoodKey.miaoshaGoodsStock.appendPrefix(String.valueOf(goods.getId())),
                     String.valueOf(goods.getStockCount())));
             localOverMap.put(goods.getId(), false);
@@ -65,7 +64,17 @@ public class MiaoshaServiceImpl implements MiaoshaService {
 
     @Override
     public long getMiaoshaResult(Long userId, long goodsId) {
-        return 0;
+        MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(String.valueOf(userId), goodsId);
+        if (order != null) {//秒杀成功
+            return order.getOrderId();
+        } else {
+            boolean isOver = getGoodsOver(goodsId);
+            if (isOver) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
     }
 
     @Override
@@ -80,7 +89,11 @@ public class MiaoshaServiceImpl implements MiaoshaService {
 
     @Override
     public boolean checkPath(UserInfo user, long goodsId, String path) {
-        return false;
+        if (user == null || path == null) {
+            return false;
+        }
+        String pathOld = execute(jedis -> jedis.get(MiaoshaKey.miaoshaPath.appendPrefix(user.getId(), String.valueOf(goodsId))));
+        return path.equals(pathOld);
     }
 
     @Override
@@ -140,7 +153,7 @@ public class MiaoshaServiceImpl implements MiaoshaService {
         if (user == null || goodsId <= 0) {
             return false;
         }
-        Integer codeOld = execute(jedis -> jedis.get(MiaoshaKey.miaoshaVerifyCode.appendPrefix(user.getId())), Integer.class);
+        Integer codeOld = execute(jedis -> jedis.get(MiaoshaKey.miaoshaVerifyCode.appendPrefix(user.getId(), String.valueOf(goodsId))), Integer.class);
         if (codeOld == null) {
             throw new BusinessException("验证码过期");
         }
@@ -178,14 +191,13 @@ public class MiaoshaServiceImpl implements MiaoshaService {
     }
 
     @Override
-    public OrderInfo miaosha(String message) {
-        MiaoshaMessage mm = SerializeUtil.stringToBean(message, MiaoshaMessage.class);
-        UserInfo user = mm.getUser();
-        long goodId = mm.getGoodsId();
+    public OrderInfo miaosha(MiaoshaMessage message) {
+        UserInfo user = message.getUser();
+        long goodId = message.getGoodsId();
 
-        MiaoshaGood miaoshaGood = goodService.getMiaoshaGood(goodId);
+        MiaoshaGoods miaoshaGoods = goodsService.getMiaoshaGood(goodId);
         // 检查库存
-        int stock = miaoshaGood.getStockCount();
+        int stock = miaoshaGoods.getStockCount();
         if (stock <= 0) {
             throw new BusinessException("已经卖完了");
         }
@@ -195,19 +207,19 @@ public class MiaoshaServiceImpl implements MiaoshaService {
             throw new BusinessException("您已经买过该商品了，不能重复秒杀");
         }
         //减库存 下订单 写入秒杀订单
-        boolean success = goodService.reduceStock(goodId);
+        boolean success = goodsService.reduceStock(goodId);
         if (success) {
             //order_info maiosha_order
-            return orderService.createOrder(user, miaoshaGood);
+            return orderService.createOrder(user, miaoshaGoods);
         } else {
-            setGoodsOver(miaoshaGood.getId());
+            setGoodsOver(miaoshaGoods.getId());
             return null;
         }
     }
 
     @Override
-    public void reset(List<MiaoshaGood> goodsList) {
-        goodService.resetStock(goodsList);
+    public void reset(List<MiaoshaGoods> goodsList) {
+        goodsService.resetStock(goodsList);
         orderService.deleteOrders();
     }
 

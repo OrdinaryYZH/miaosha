@@ -1,4 +1,4 @@
-package com.genericyzh.miaosha.good.model.vo;
+package com.genericyzh.miaosha.goods.model.vo;
 
 
 import com.genericyzh.miaosha.user.model.UserInfo;
@@ -6,10 +6,10 @@ import com.genericyzh.miaosha.user.model.UserInfo;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class GoodDetailVO {
+public class GoodsDetailVO {
     private int miaoshaStatus = 0;
     private int remainSeconds = 0;
-    private MiaoshaGoodDetail good;
+    private MiaoshaGoodsDetail goods;
     private UserInfo user;
 
     public int getMiaoshaStatus() {
@@ -28,12 +28,12 @@ public class GoodDetailVO {
         this.remainSeconds = remainSeconds;
     }
 
-    public MiaoshaGoodDetail getGood() {
-        return good;
+    public MiaoshaGoodsDetail getGoods() {
+        return goods;
     }
 
-    public void setGood(MiaoshaGoodDetail good) {
-        this.good = good;
+    public void setGoods(MiaoshaGoodsDetail goods) {
+        this.goods = goods;
     }
 
     public UserInfo getUser() {
@@ -44,13 +44,13 @@ public class GoodDetailVO {
         this.user = user;
     }
 
-    public static class MiaoshaGoodDetail {
+    public static class MiaoshaGoodsDetail {
         private String id;
-        private String goodName;
-        private String goodImg;
+        private String goodsName;
+        private String goodsImg;
         private Date startDate;
         private Date endDate;
-        private BigDecimal goodPrice;
+        private BigDecimal goodsPrice;
         private BigDecimal miaoshaPrice;
         private int stockCount;
 
@@ -62,20 +62,20 @@ public class GoodDetailVO {
             this.id = id;
         }
 
-        public String getGoodName() {
-            return goodName;
+        public String getGoodsName() {
+            return goodsName;
         }
 
-        public void setGoodName(String goodName) {
-            this.goodName = goodName;
+        public void setGoodsName(String goodsName) {
+            this.goodsName = goodsName;
         }
 
-        public String getGoodImg() {
-            return goodImg;
+        public String getGoodsImg() {
+            return goodsImg;
         }
 
-        public void setGoodImg(String goodImg) {
-            this.goodImg = goodImg;
+        public void setGoodsImg(String goodsImg) {
+            this.goodsImg = goodsImg;
         }
 
         public Date getStartDate() {
@@ -94,12 +94,12 @@ public class GoodDetailVO {
             this.endDate = endDate;
         }
 
-        public BigDecimal getGoodPrice() {
-            return goodPrice;
+        public BigDecimal getGoodsPrice() {
+            return goodsPrice;
         }
 
-        public void setGoodPrice(BigDecimal goodPrice) {
-            this.goodPrice = goodPrice;
+        public void setGoodsPrice(BigDecimal goodsPrice) {
+            this.goodsPrice = goodsPrice;
         }
 
         public BigDecimal getMiaoshaPrice() {

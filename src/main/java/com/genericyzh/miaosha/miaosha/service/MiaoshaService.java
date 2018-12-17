@@ -1,7 +1,8 @@
 package com.genericyzh.miaosha.miaosha.service;
 
-import com.genericyzh.miaosha.good.model.MiaoshaGood;
+import com.genericyzh.miaosha.goods.model.MiaoshaGoods;
 import com.genericyzh.miaosha.order.model.OrderInfo;
+import com.genericyzh.miaosha.rabbitmq.MiaoshaMessage;
 import com.genericyzh.miaosha.user.model.UserInfo;
 
 import java.awt.image.BufferedImage;
@@ -39,8 +40,8 @@ public interface MiaoshaService {
 
     void checkBeforeMiaosha(long goodsId, String path);
 
-    OrderInfo miaosha(String message);
+    OrderInfo miaosha(MiaoshaMessage message);
 
-    void reset(List<MiaoshaGood> goodsList);
+    void reset(List<MiaoshaGoods> goodsList);
 
 }

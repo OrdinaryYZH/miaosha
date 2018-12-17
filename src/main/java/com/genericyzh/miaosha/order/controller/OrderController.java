@@ -1,8 +1,8 @@
 package com.genericyzh.miaosha.order.controller;
 
 import com.genericyzh.miaosha.common.exception.BusinessException;
-import com.genericyzh.miaosha.good.model.Good;
-import com.genericyzh.miaosha.good.service.GoodService;
+import com.genericyzh.miaosha.goods.model.Goods;
+import com.genericyzh.miaosha.goods.service.GoodsService;
 import com.genericyzh.miaosha.order.model.OrderInfo;
 import com.genericyzh.miaosha.order.model.vo.OrderDetailVo;
 import com.genericyzh.miaosha.order.service.OrderService;
@@ -24,7 +24,7 @@ public class OrderController {
     OrderService orderService;
 
     @Autowired
-    GoodService goodService;
+    GoodsService goodsService;
 
     @RequestMapping("/detail")
     @ResponseBody
@@ -35,10 +35,10 @@ public class OrderController {
             throw new BusinessException("订单不存在");
         }
         long goodsId = order.getGoodsId();
-        Good good = goodService.getGood(goodsId);
+        Goods goods = goodsService.getGoods(goodsId);
         OrderDetailVo vo = new OrderDetailVo();
         vo.setOrder(order);
-        vo.setGood(good);
+        vo.setGoods(goods);
         return vo;
     }
 

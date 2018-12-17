@@ -1,9 +1,9 @@
-package com.genericyzh.miaosha.good.controller;
+package com.genericyzh.miaosha.goods.controller;
 
 import com.genericyzh.miaosha.access.UserContext;
-import com.genericyzh.miaosha.good.model.vo.GoodDetailVO;
-import com.genericyzh.miaosha.good.model.vo.GoodVO;
-import com.genericyzh.miaosha.good.service.GoodService;
+import com.genericyzh.miaosha.goods.model.vo.GoodsDetailVO;
+import com.genericyzh.miaosha.goods.model.vo.GoodsVO;
+import com.genericyzh.miaosha.goods.service.GoodsService;
 import com.genericyzh.miaosha.redis.RedisClient;
 import com.genericyzh.miaosha.redis.key.GoodKey;
 import org.apache.commons.lang3.StringUtils;
@@ -22,10 +22,10 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/goods")
-public class GoodController {
+public class GoodsController {
 
     @Autowired
-    private GoodService goodService;
+    private GoodsService goodsService;
 
     @Autowired
     ThymeleafViewResolver thymeleafViewResolver;
@@ -40,7 +40,7 @@ public class GoodController {
         if (!StringUtils.isEmpty(cacheHtml)) {
             return cacheHtml;
         }
-        List<GoodVO> goodsList = goodService.listGoodsVo();
+        List<GoodsVO> goodsList = goodsService.listGoodsVo();
         model.addAttribute("goodsList", goodsList);
 //    	 return "goods_list";
         WebContext ctx = new WebContext(request, response, request.getServletContext(),
@@ -53,11 +53,11 @@ public class GoodController {
         return html;
     }
 
-    @RequestMapping(value = "/detail/{goodId}")
+    @RequestMapping(value = "/detail/{goodsId}")
     @ResponseBody
-    public GoodDetailVO detail(
-            @PathVariable("goodId") long goodId) {
-        GoodDetailVO.MiaoshaGoodDetail goods = goodService.getMiaoshaGoodDetail(goodId);
+    public GoodsDetailVO detail(
+            @PathVariable("goodsId") long goodsId) {
+        GoodsDetailVO.MiaoshaGoodsDetail goods = goodsService.getMiaoshaGoodDetail(goodsId);
         long startAt = goods.getStartDate().getTime();
         long endAt = goods.getEndDate().getTime();
         long now = System.currentTimeMillis();
@@ -73,8 +73,8 @@ public class GoodController {
             miaoshaStatus = 1;
             remainSeconds = 0;
         }
-        GoodDetailVO vo = new GoodDetailVO();
-        vo.setGood(goods);
+        GoodsDetailVO vo = new GoodsDetailVO();
+        vo.setGoods(goods);
         vo.setUser(UserContext.getUser());
         vo.setRemainSeconds(remainSeconds);
         vo.setMiaoshaStatus(miaoshaStatus);

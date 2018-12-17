@@ -1,10 +1,10 @@
-package com.genericyzh.miaosha.good.model;
+package com.genericyzh.miaosha.goods.model;
 
-public class Good {
+public class Goods {
     private Long id;
     private String goodsName;
     private String goodsTitle;
-    private String goodImg;
+    private String goodsImg;
     private String goodsDetail;
     private Double goodsPrice;
     private Integer goodsStock;
@@ -33,12 +33,12 @@ public class Good {
         this.goodsTitle = goodsTitle;
     }
 
-    public String getgoodImg() {
-        return goodImg;
+    public String getgoodsImg() {
+        return goodsImg;
     }
 
-    public void setgoodImg(String goodImg) {
-        this.goodImg = goodImg;
+    public void setgoodsImg(String goodsImg) {
+        this.goodsImg = goodsImg;
     }
 
     public String getGoodsDetail() {

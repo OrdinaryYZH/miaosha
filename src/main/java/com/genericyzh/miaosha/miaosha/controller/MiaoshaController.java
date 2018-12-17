@@ -4,8 +4,9 @@ import com.genericyzh.miaosha.access.AccessLimit;
 import com.genericyzh.miaosha.access.UserContext;
 import com.genericyzh.miaosha.common.exception.BusinessException;
 import com.genericyzh.miaosha.common.result.ResultBean;
-import com.genericyzh.miaosha.good.model.MiaoshaGood;
-import com.genericyzh.miaosha.good.service.GoodService;
+import com.genericyzh.miaosha.common.result.ResultCode;
+import com.genericyzh.miaosha.goods.model.MiaoshaGoods;
+import com.genericyzh.miaosha.goods.service.GoodsService;
 import com.genericyzh.miaosha.miaosha.service.MiaoshaService;
 import com.genericyzh.miaosha.order.service.OrderService;
 import com.genericyzh.miaosha.rabbitmq.MQSender;
@@ -15,7 +16,9 @@ import com.genericyzh.miaosha.redis.key.MiaoshaKey;
 import com.genericyzh.miaosha.redis.key.OrderKey;
 import com.genericyzh.miaosha.user.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
@@ -45,7 +48,7 @@ public class MiaoshaController {
     OrderService orderService;
 
     @Autowired
-    GoodService goodService;
+    GoodsService goodsService;
 
     @Autowired
     MQSender sender;
@@ -53,7 +56,7 @@ public class MiaoshaController {
     @GetMapping(value = "/verifyCode")
     @ResponseBody
     public ResultBean<String> getMiaoshaVerifyCod(HttpServletResponse response,
-                                                  @RequestParam("goodId") long goodsId) throws IOException {
+                                                  @RequestParam("goodsId") long goodsId) throws IOException {
         BufferedImage image = miaoshaService.createVerifyCode(UserContext.getUser(), goodsId);
         OutputStream out = response.getOutputStream();
         ImageIO.write(image, "JPEG", out);
@@ -63,7 +66,7 @@ public class MiaoshaController {
     }
 
     @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
-    @RequestMapping(value = "/path", method = RequestMethod.GET)
+    @RequestMapping(value = "/path", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public String getMiaoshaPath(
             @RequestParam("goodsId") long goodsId,
@@ -74,6 +77,21 @@ public class MiaoshaController {
             throw new BusinessException("验证失败");
         }
         return miaoshaService.createMiaoshaPath(user, goodsId);
+    }
+
+    /**
+     * orderId：成功
+     * -1：秒杀失败
+     * 0： 排队中
+     */
+    @RequestMapping(value = "/result", method = RequestMethod.GET)
+    @ResponseBody
+    public ResultBean<Long> miaoshaResult(Model model,
+                                          @RequestParam("goodsId") long goodsId) {
+        UserInfo user = UserContext.getUser();
+        model.addAttribute("user", user);
+        long result = miaoshaService.getMiaoshaResult(Long.valueOf(user.getId()), goodsId);
+        return ResultBean.builder(ResultCode.SUCCESS).setData(result).build();
     }
 
     /**
@@ -101,8 +119,8 @@ public class MiaoshaController {
     @RequestMapping(value = "/reset", method = RequestMethod.GET)
     @ResponseBody
     public Boolean reset() {
-        List<MiaoshaGood> goods = goodService.listMiaoshaGoods();
-        for (MiaoshaGood good : goods) {
+        List<MiaoshaGoods> goods = goodsService.listMiaoshaGoods();
+        for (MiaoshaGoods good : goods) {
             good.setStockCount(10);
             execute(jedis -> jedis.set(GoodKey.miaoshaGoodsStock.appendPrefix(good.getId().toString()), "10"));
 //            redisService.set(GoodsKey.getMiaoshaGoodsStock, "" + good.getId(), 10);
@@ -111,12 +129,16 @@ public class MiaoshaController {
         scanParams.match(OrderKey.MiaoshaOrderByUidGid.getPrefix() + "*");
         scanParams.count(1000);
         ScanResult<String> result = execute(jedis -> jedis.scan("1", scanParams));
-        execute(jedis -> jedis.del(result.getResult().toArray(new String[result.getResult().size()])));
+        if (result.getResult().size() > 0) {
+            execute(jedis -> jedis.del(result.getResult().toArray(new String[result.getResult().size()])));
+        }
 
         scanParams.match(MiaoshaKey.isGoodsOver + "*");
         scanParams.count(1000);
         ScanResult<String> result2 = execute(jedis -> jedis.scan("1", scanParams));
-        execute(jedis -> jedis.del(result2.getResult().toArray(new String[result2.getResult().size()])));
+        if (result2.getResult().size() > 0) {
+            execute(jedis -> jedis.del(result2.getResult().toArray(new String[result2.getResult().size()])));
+        }
 
         miaoshaService.reset(goods);
         return true;

@@ -3,7 +3,9 @@ package com.genericyzh.miaosha.rabbitmq;
 
 import com.genericyzh.miaosha.user.model.UserInfo;
 
-public class MiaoshaMessage {
+import java.io.Serializable;
+
+public class MiaoshaMessage implements Serializable {
     private UserInfo user;
     private long goodsId;
 
