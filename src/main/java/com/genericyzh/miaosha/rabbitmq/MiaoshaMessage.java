@@ -3,11 +3,12 @@ package com.genericyzh.miaosha.rabbitmq;
 
 import com.genericyzh.miaosha.user.model.UserInfo;
 
-import java.io.Serializable;
-
-public class MiaoshaMessage implements Serializable {
+public class MiaoshaMessage {
     private UserInfo user;
     private long goodsId;
+
+    public MiaoshaMessage() {
+    }
 
     public UserInfo getUser() {
         return user;
@@ -23,5 +24,13 @@ public class MiaoshaMessage implements Serializable {
 
     public void setGoodsId(long goodsId) {
         this.goodsId = goodsId;
+    }
+
+    @Override
+    public String toString() {
+        return "MiaoshaMessage{" +
+                "user=" + user +
+                ", goodsId=" + goodsId +
+                '}';
     }
 }

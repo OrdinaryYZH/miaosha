@@ -7,7 +7,7 @@ import java.util.Date;
  * @author genericyzh
  * @date 2018/10/5 16:20
  */
-public class UserInfo implements Serializable {
+public class UserInfo  {
 
     private String id;
     private String nickname;
@@ -16,6 +16,9 @@ public class UserInfo implements Serializable {
     private String salt;
     private Date gmtCreate;
     private Date gmtModified;
+
+    public UserInfo() {
+    }
 
     public String getId() {
         return id;

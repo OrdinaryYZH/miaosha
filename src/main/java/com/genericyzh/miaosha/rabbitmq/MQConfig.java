@@ -1,23 +1,28 @@
 package com.genericyzh.miaosha.rabbitmq;
 
-import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 
 @Configuration
 public class MQConfig {
 
     public static final String MIAOSHA_QUEUE = "miaosha.queue";
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    @Bean
+    public Jackson2JsonMessageConverter producerJackson2MessageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
+        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(producerJackson2MessageConverter());
+        return rabbitTemplate;
+    }
 
 
     /**
@@ -71,7 +76,6 @@ public class MQConfig {
 //        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 //        return factory;
 //    }
-
     @Bean
     public Queue miaoshaQueue() {
         return new Queue(MIAOSHA_QUEUE, true);
