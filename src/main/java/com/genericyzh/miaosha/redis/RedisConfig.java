@@ -1,13 +1,11 @@
 package com.genericyzh.miaosha.redis;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * @author genericyzh
  * @date 2018/10/2 16:06
  */
-@Component
 @ConfigurationProperties(prefix = "redis")
 public class RedisConfig {
     private String host;

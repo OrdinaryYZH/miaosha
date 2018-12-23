@@ -22,6 +22,9 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     @Autowired
+    RedisClient redisClient;
+
+    @Autowired
     private UserDao userDao;
 
     @Override
@@ -57,7 +60,7 @@ public class UserServiceImpl implements UserService {
         }
         //生成cookie
         String token = UUIDUtil.uuid();
-        RedisClient.execute(jedis -> jedis.set(MiaoshaUserKey.token.appendPrefix(token),
+        redisClient.execute(jedis -> jedis.set(MiaoshaUserKey.token.appendPrefix(token),
                 SerializeUtil.beanToString(user),
                 "nx",
                 "ex",

@@ -5,6 +5,7 @@ import com.genericyzh.miaosha.miaosha.model.MiaoshaOrder;
 import com.genericyzh.miaosha.order.dao.OrderDao;
 import com.genericyzh.miaosha.order.model.OrderInfo;
 import com.genericyzh.miaosha.order.service.OrderService;
+import com.genericyzh.miaosha.redis.RedisClient;
 import com.genericyzh.miaosha.redis.key.OrderKey;
 import com.genericyzh.miaosha.user.model.UserInfo;
 import com.genericyzh.miaosha.utils.SerializeUtil;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
-import static com.genericyzh.miaosha.redis.RedisClient.execute;
 
 /**
  * @author genericyzh
@@ -24,11 +24,14 @@ import static com.genericyzh.miaosha.redis.RedisClient.execute;
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
+    RedisClient redisClient;
+
+    @Autowired
     private OrderDao orderDao;
 
     @Override
     public MiaoshaOrder getMiaoshaOrderByUserIdGoodsId(String userId, long goodsId) {
-        MiaoshaOrder miaoshaOrder = execute(jedis -> jedis.get(OrderKey.MiaoshaOrderByUidGid.appendPrefix(userId, String.valueOf(goodsId))),
+        MiaoshaOrder miaoshaOrder = redisClient.execute(jedis -> jedis.get(OrderKey.MiaoshaOrderByUidGid.appendPrefix(userId, String.valueOf(goodsId))),
                 MiaoshaOrder.class);
         return miaoshaOrder;
     }
@@ -60,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
         miaoshaOrder.setUserId(user.getId());
         orderDao.insertMiaoshaOrder(miaoshaOrder);
 
-        execute(jedis -> jedis.set(OrderKey.MiaoshaOrderByUidGid.appendPrefix(user.getId(), String.valueOf(miaoshaGoods.getId()))
+        redisClient.execute(jedis -> jedis.set(OrderKey.MiaoshaOrderByUidGid.appendPrefix(user.getId(), String.valueOf(miaoshaGoods.getId()))
                 , SerializeUtil.beanToString(miaoshaOrder)));
         return orderInfo;
     }

@@ -25,6 +25,9 @@ import java.util.List;
 public class GoodsController {
 
     @Autowired
+    RedisClient redisClient;
+
+    @Autowired
     private GoodsService goodsService;
 
     @Autowired
@@ -36,7 +39,7 @@ public class GoodsController {
     public String list(HttpServletRequest request, HttpServletResponse response, Model model) {
         model.addAttribute("user", UserContext.getUser());
         //取缓存
-        String cacheHtml = RedisClient.execute(jedis -> jedis.get(GoodKey.goodsList.getPrefix()));
+        String cacheHtml = redisClient.execute(jedis -> jedis.get(GoodKey.goodsList.getPrefix()));
         if (!StringUtils.isEmpty(cacheHtml)) {
             return cacheHtml;
         }
@@ -48,7 +51,7 @@ public class GoodsController {
         //手动渲染
         String html = thymeleafViewResolver.getTemplateEngine().process("goods_list", ctx);
         if (!StringUtils.isEmpty(html)) {
-            RedisClient.execute(jedis -> jedis.set(GoodKey.goodsList.getPrefix(), html, "nx", "ex", 60));
+            redisClient.execute(jedis -> jedis.set(GoodKey.goodsList.getPrefix(), html, "nx", "ex", 60));
         }
         return html;
     }

@@ -4,6 +4,7 @@ import com.genericyzh.miaosha.redis.RedisClient;
 import com.genericyzh.miaosha.redis.key.MiaoshaUserKey;
 import com.genericyzh.miaosha.user.model.UserInfo;
 import com.genericyzh.miaosha.utils.CookieUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -15,6 +16,9 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2018/10/6 16:13
  */
 public class LoginInterceptor extends HandlerInterceptorAdapter {
+
+    @Autowired
+    RedisClient redisClient;
 
     public static final String LOGIN_ADDRESS = "/login/to_login";
 
@@ -28,18 +32,18 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         }
 
         // 缓存中不存在token的话，也跳到登陆页面
-        Boolean flag = RedisClient.execute(jedis -> jedis.exists(MiaoshaUserKey.token.appendPrefix(token)));
+        Boolean flag = redisClient.execute(jedis -> jedis.exists(MiaoshaUserKey.token.appendPrefix(token)));
         if (flag == false) {
             response.sendRedirect(LOGIN_ADDRESS);
             return false;
         }
 
         // 延长token时间
-        RedisClient.execute(jedis -> jedis.expire(token, MiaoshaUserKey.token.expireSeconds()));
+        redisClient.execute(jedis -> jedis.expire(token, MiaoshaUserKey.token.expireSeconds()));
         CookieUtil.writeLoginToken(response, token);
 
         // 设置线程用户
-        UserInfo userInfo = RedisClient.execute(jedis -> jedis.get(MiaoshaUserKey.token.appendPrefix(token)), UserInfo.class);
+        UserInfo userInfo = redisClient.execute(jedis -> jedis.get(MiaoshaUserKey.token.appendPrefix(token)), UserInfo.class);
         UserContext.setUser(userInfo);
 
         return true;

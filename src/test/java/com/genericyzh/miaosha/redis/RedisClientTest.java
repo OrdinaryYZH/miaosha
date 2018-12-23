@@ -4,6 +4,7 @@ import com.genericyzh.miaosha.utils.SerializeUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -19,6 +20,9 @@ public class RedisClientTest implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
+    @Autowired
+    RedisClient redisClient;
+
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -28,20 +32,20 @@ public class RedisClientTest implements ApplicationContextAware {
     @Test
     public void execute() throws Exception {
         // 简单的set(String, String)
-        RedisClient.execute(jedis -> jedis.set("hello2", "world"));
+        redisClient.execute(jedis -> jedis.set("hello2", "world"));
     }
 
     @Test
     public void serials() throws Exception {
         // 设置Bean序列化后到redis中
         User alice = new User("Alice", 10);
-        RedisClient.execute(jedis -> jedis.set("user1", SerializeUtil.beanToString(alice)));
+        redisClient.execute(jedis -> jedis.set("user1", SerializeUtil.beanToString(alice)));
     }
 
     @Test
     public void deSerials() throws Exception {
         // 反序列化
-        User user1 = RedisClient.execute(jedis -> jedis.get("user1"), User.class);
+        User user1 = redisClient.execute(jedis -> jedis.get("user1"), User.class);
         System.out.println(user1);
     }
 

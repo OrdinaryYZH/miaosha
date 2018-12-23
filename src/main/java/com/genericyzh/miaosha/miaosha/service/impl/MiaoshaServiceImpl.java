@@ -9,13 +9,13 @@ import com.genericyzh.miaosha.miaosha.service.MiaoshaService;
 import com.genericyzh.miaosha.order.model.OrderInfo;
 import com.genericyzh.miaosha.order.service.OrderService;
 import com.genericyzh.miaosha.rabbitmq.MiaoshaMessage;
+import com.genericyzh.miaosha.redis.RedisClient;
 import com.genericyzh.miaosha.redis.key.GoodKey;
 import com.genericyzh.miaosha.redis.key.MiaoshaKey;
 import com.genericyzh.miaosha.user.model.UserInfo;
 import com.genericyzh.miaosha.utils.MD5Util;
 import com.genericyzh.miaosha.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -27,15 +27,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import static com.genericyzh.miaosha.redis.RedisClient.execute;
 
 /**
  * @author genericyzh
  * @date 2018/10/10 20:32
  */
 @Service
-@DependsOn("RedisPoolFactory")
+//@DependsOn("RedisPoolFactory")
 public class MiaoshaServiceImpl implements MiaoshaService {
+
+    @Autowired
+    RedisClient redisClient;
 
     @Autowired
     OrderService orderService;
@@ -56,7 +58,7 @@ public class MiaoshaServiceImpl implements MiaoshaService {
             return;
         }
         for (MiaoshaGoods goods : goodVOS) {
-            execute(jedis -> jedis.set(GoodKey.miaoshaGoodsStock.appendPrefix(String.valueOf(goods.getId())),
+            redisClient.execute(jedis -> jedis.set(GoodKey.miaoshaGoodsStock.appendPrefix(String.valueOf(goods.getId())),
                     String.valueOf(goods.getStockCount())));
             localOverMap.put(goods.getId(), false);
         }
@@ -92,7 +94,7 @@ public class MiaoshaServiceImpl implements MiaoshaService {
         if (user == null || path == null) {
             return false;
         }
-        String pathOld = execute(jedis -> jedis.get(MiaoshaKey.miaoshaPath.appendPrefix(user.getId(), String.valueOf(goodsId))));
+        String pathOld = redisClient.execute(jedis -> jedis.get(MiaoshaKey.miaoshaPath.appendPrefix(user.getId(), String.valueOf(goodsId))));
         return path.equals(pathOld);
     }
 
@@ -102,7 +104,7 @@ public class MiaoshaServiceImpl implements MiaoshaService {
             return null;
         }
         String str = MD5Util.md5(UUIDUtil.uuid() + "123456");
-        execute(jedis -> jedis.setex(MiaoshaKey.miaoshaPath.appendPrefix(user.getId(), String.valueOf(goodsId)),
+        redisClient.execute(jedis -> jedis.setex(MiaoshaKey.miaoshaPath.appendPrefix(user.getId(), String.valueOf(goodsId)),
                 MiaoshaKey.miaoshaPath.expireSeconds(),
                 str));
         return str;
@@ -140,7 +142,7 @@ public class MiaoshaServiceImpl implements MiaoshaService {
         g.dispose();
         //把验证码存到redis中
         int rnd = calc(verifyCode);
-        execute(jedis -> jedis.setex(MiaoshaKey.miaoshaVerifyCode.appendPrefix(user.getId(), String.valueOf(goodsId)),
+        redisClient.execute(jedis -> jedis.setex(MiaoshaKey.miaoshaVerifyCode.appendPrefix(user.getId(), String.valueOf(goodsId)),
                 MiaoshaKey.miaoshaVerifyCode.expireSeconds(),
                 String.valueOf(rnd)
         ));
@@ -153,14 +155,14 @@ public class MiaoshaServiceImpl implements MiaoshaService {
         if (user == null || goodsId <= 0) {
             return false;
         }
-        Integer codeOld = execute(jedis -> jedis.get(MiaoshaKey.miaoshaVerifyCode.appendPrefix(user.getId(), String.valueOf(goodsId))), Integer.class);
+        Integer codeOld = redisClient.execute(jedis -> jedis.get(MiaoshaKey.miaoshaVerifyCode.appendPrefix(user.getId(), String.valueOf(goodsId))), Integer.class);
         if (codeOld == null) {
             throw new BusinessException("验证码过期");
         }
         if (codeOld != verifyCode) {
             throw new BusinessException("验证码不正确");
         }
-        execute(jedis -> jedis.del(MiaoshaKey.miaoshaVerifyCode.appendPrefix(user.getId())));
+        redisClient.execute(jedis -> jedis.del(MiaoshaKey.miaoshaVerifyCode.appendPrefix(user.getId())));
         return true;
     }
 
@@ -183,7 +185,7 @@ public class MiaoshaServiceImpl implements MiaoshaService {
             throw new BusinessException("不能重复秒杀");
         }
         //预减库存
-        long stock = execute(jedis -> jedis.decr(GoodKey.miaoshaGoodsStock.appendPrefix(String.valueOf(goodsId))));
+        long stock = redisClient.execute(jedis -> jedis.decr(GoodKey.miaoshaGoodsStock.appendPrefix(String.valueOf(goodsId))));
         if (stock < 0) {
             localOverMap.put(goodsId, true);
             throw new BusinessException("商品已经秒杀完毕");

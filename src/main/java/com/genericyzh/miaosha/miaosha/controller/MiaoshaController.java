@@ -11,6 +11,7 @@ import com.genericyzh.miaosha.miaosha.service.MiaoshaService;
 import com.genericyzh.miaosha.order.service.OrderService;
 import com.genericyzh.miaosha.rabbitmq.MQSender;
 import com.genericyzh.miaosha.rabbitmq.MiaoshaMessage;
+import com.genericyzh.miaosha.redis.RedisClient;
 import com.genericyzh.miaosha.redis.key.GoodKey;
 import com.genericyzh.miaosha.redis.key.MiaoshaKey;
 import com.genericyzh.miaosha.redis.key.OrderKey;
@@ -31,7 +32,6 @@ import java.io.OutputStream;
 import java.util.List;
 
 import static com.genericyzh.miaosha.common.result.ResultCode.SUCCESS;
-import static com.genericyzh.miaosha.redis.RedisClient.execute;
 
 /**
  * @author genericyzh
@@ -40,6 +40,9 @@ import static com.genericyzh.miaosha.redis.RedisClient.execute;
 @Controller
 @RequestMapping("miaosha")
 public class MiaoshaController {
+
+    @Autowired
+    RedisClient redisClient;
 
     @Autowired
     MiaoshaService miaoshaService;
@@ -122,22 +125,22 @@ public class MiaoshaController {
         List<MiaoshaGoods> goods = goodsService.listMiaoshaGoods();
         for (MiaoshaGoods good : goods) {
             good.setStockCount(10);
-            execute(jedis -> jedis.set(GoodKey.miaoshaGoodsStock.appendPrefix(good.getId().toString()), "10"));
+            redisClient.execute(jedis -> jedis.set(GoodKey.miaoshaGoodsStock.appendPrefix(good.getId().toString()), "10"));
 //            redisService.set(GoodsKey.getMiaoshaGoodsStock, "" + good.getId(), 10);
         }
         ScanParams scanParams = new ScanParams();
         scanParams.match(OrderKey.MiaoshaOrderByUidGid.getPrefix() + "*");
         scanParams.count(1000);
-        ScanResult<String> result = execute(jedis -> jedis.scan("1", scanParams));
+        ScanResult<String> result = redisClient.execute(jedis -> jedis.scan("1", scanParams));
         if (result.getResult().size() > 0) {
-            execute(jedis -> jedis.del(result.getResult().toArray(new String[result.getResult().size()])));
+            redisClient.execute(jedis -> jedis.del(result.getResult().toArray(new String[result.getResult().size()])));
         }
 
         scanParams.match(MiaoshaKey.isGoodsOver + "*");
         scanParams.count(1000);
-        ScanResult<String> result2 = execute(jedis -> jedis.scan("1", scanParams));
+        ScanResult<String> result2 = redisClient.execute(jedis -> jedis.scan("1", scanParams));
         if (result2.getResult().size() > 0) {
-            execute(jedis -> jedis.del(result2.getResult().toArray(new String[result2.getResult().size()])));
+            redisClient.execute(jedis -> jedis.del(result2.getResult().toArray(new String[result2.getResult().size()])));
         }
 
         miaoshaService.reset(goods);
