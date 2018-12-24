@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import({RedisSpringConfiguration.class})
+//@Import({RedisSpringConfiguration.class})
 public class MiaoshaApplication {
 
     public static void main(String[] args) {
