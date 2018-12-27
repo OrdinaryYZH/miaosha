@@ -10,7 +10,6 @@ import javax.annotation.PreDestroy;
  * @author genericyzh
  * @date 2018/10/2 16:08
  */
-//@Component("RedisPoolFactory")
 public class RedisPoolFactory {
 
     private RedisConfig redisConfig;
@@ -22,13 +21,7 @@ public class RedisPoolFactory {
 
     public RedisPoolFactory(RedisConfig redisConfig) {
         this.redisConfig = redisConfig;
-        initPool();
     }
-
-//    @PostConstruct
-//    private void init() {
-//        RedisPoolFactory.redisPoolClient = this;
-//    }
 
     @PreDestroy
     private void closePool() {
@@ -37,11 +30,8 @@ public class RedisPoolFactory {
         }
     }
 
-//    public static RedisPoolFactory getInstance() {
-//        return redisPoolClient;
-//    }
-
     public Jedis getJedis() {
+        // 延迟初始化
         if (pool == null) {
             synchronized (JedisPool.class) {
                 if (pool == null) {
