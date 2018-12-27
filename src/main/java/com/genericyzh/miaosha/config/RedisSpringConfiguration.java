@@ -1,5 +1,8 @@
-package com.genericyzh.miaosha.redis;
+package com.genericyzh.miaosha.config;
 
+import com.genericyzh.miaosha.redis.RedisClient;
+import com.genericyzh.miaosha.redis.RedisConfig;
+import com.genericyzh.miaosha.redis.RedisPoolFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
