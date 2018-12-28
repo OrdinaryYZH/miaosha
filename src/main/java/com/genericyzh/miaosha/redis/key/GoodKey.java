@@ -1,5 +1,7 @@
 package com.genericyzh.miaosha.redis.key;
 
+import com.genericyzh.miaosha.redis.key.common.BasePrefix;
+
 public class GoodKey extends BasePrefix {
 
     private GoodKey(int expireSeconds, String prefix) {

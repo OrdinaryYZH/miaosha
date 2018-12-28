@@ -1,4 +1,4 @@
-package com.genericyzh.miaosha.redis.key;
+package com.genericyzh.miaosha.redis.key.common;
 
 /**
  * @author genericyzh

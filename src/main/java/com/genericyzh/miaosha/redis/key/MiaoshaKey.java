@@ -1,5 +1,7 @@
 package com.genericyzh.miaosha.redis.key;
 
+import com.genericyzh.miaosha.redis.key.common.BasePrefix;
+
 /**
  * @author genericyzh
  * @date 2018/10/4 17:46
