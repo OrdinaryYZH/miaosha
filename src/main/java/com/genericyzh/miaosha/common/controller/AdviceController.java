@@ -27,22 +27,22 @@ public class AdviceController implements ResponseBodyAdvice {
     @ExceptionHandler(BusinessException.class)
     public ResultBean handlerError(BusinessException e) {
         ResultBean resultBean = ResultBean.builder(FAIL).setMessage(e.getMessage()).build();
-        outputInfoLog(e);
+        logInfo(e);
         return resultBean;
     }
 
     @ExceptionHandler(Exception.class)
     public ResultBean handlerError(Exception e) {
         ResultBean resultBean = ResultBean.builder(FAIL).setMessage(e.getMessage()).build();
-        outputErrorLog(e);
+        logError(e);
         return resultBean;
     }
 
-    private void outputInfoLog(Exception e) {
+    private void logInfo(Exception e) {
         LOGGER.info("", e);
     }
 
-    private void outputErrorLog(Exception e) {
+    private void logError(Exception e) {
         LOGGER.error("", e);
     }
 

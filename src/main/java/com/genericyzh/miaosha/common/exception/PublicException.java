@@ -17,6 +17,7 @@ public class PublicException extends RuntimeException {
     }
 
     public PublicException(ResultCode code) {
+        super(code.message());
         this.code = code.code();
         this.msg = code.message();
     }
@@ -27,14 +28,16 @@ public class PublicException extends RuntimeException {
         this.msg = errorMsg;
     }
 
-    public PublicException(int code, String errorMsg) {
+    public PublicException(int code, String message) {
+        super(message);
         this.code = code;
-        this.msg = errorMsg;
+        this.msg = message;
     }
 
-    public PublicException(int code, String errorMsg, String developerMessage) {
+    public PublicException(int code, String message, String developerMessage) {
+        super(message);
         this.code = code;
-        this.msg = errorMsg;
+        this.msg = message;
         this.developerMessage = developerMessage;
     }
 
