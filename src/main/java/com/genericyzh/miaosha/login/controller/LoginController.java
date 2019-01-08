@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * @author genericyzh
@@ -39,7 +40,7 @@ public class LoginController {
 
     @RequestMapping(value = "do_login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public String login(HttpServletResponse response, LoginQuery loginQuery) {
+    public String login(HttpServletResponse response, @Valid LoginQuery loginQuery) {
         String token = userService.login(loginQuery);
         addCookie(response, token);
         return token;

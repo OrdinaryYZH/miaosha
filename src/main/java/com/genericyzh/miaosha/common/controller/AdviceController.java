@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
@@ -27,6 +28,15 @@ public class AdviceController implements ResponseBodyAdvice {
     @ExceptionHandler(BusinessException.class)
     public ResultBean handlerError(BusinessException e) {
         ResultBean resultBean = ResultBean.builder(FAIL).setMessage(e.getMessage()).build();
+        logInfo(e);
+        return resultBean;
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResultBean handleBindException(BindException e) {
+        // 返回第一个绑定参数错误
+        String message = e.getFieldErrors().get(0).getDefaultMessage();
+        ResultBean resultBean = ResultBean.builder(FAIL).setMessage(message).build();
         logInfo(e);
         return resultBean;
     }

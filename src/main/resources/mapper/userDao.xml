@@ -7,7 +7,7 @@
           *
         from
           miaosha_user m_user
-        where m_user.`id` = ${id}
+        where m_user.`id` = #{id}
     </select>
 
 </mapper>
