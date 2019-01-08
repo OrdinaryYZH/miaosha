@@ -19,5 +19,4 @@ public abstract class UserContext {
         userHolder.remove();
     }
 
-
 }
