@@ -7,7 +7,7 @@ import com.genericyzh.miaosha.common.result.ResultCode;
  * @author genericyzh
  */
 public class PublicException extends RuntimeException {
-    private int code;
+    private int code = 999;
     private String msg;
     private String developerMessage;
 
@@ -22,10 +22,10 @@ public class PublicException extends RuntimeException {
         this.msg = code.message();
     }
 
-    public PublicException(ResultCode code, String errorMsg) {
-        super(errorMsg);
+    public PublicException(ResultCode code, String message) {
+        super(message);
         this.code = code.code();
-        this.msg = errorMsg;
+        this.msg = message;
     }
 
     public PublicException(int code, String message) {

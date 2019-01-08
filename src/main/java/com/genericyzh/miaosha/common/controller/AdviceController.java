@@ -2,6 +2,7 @@ package com.genericyzh.miaosha.common.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.genericyzh.miaosha.common.exception.BusinessException;
+import com.genericyzh.miaosha.common.exception.PublicException;
 import com.genericyzh.miaosha.common.result.ResultBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +26,9 @@ import static com.genericyzh.miaosha.common.result.ResultCode.SUCCESS;
 public class AdviceController implements ResponseBodyAdvice {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdviceController.class);
 
-    @ExceptionHandler(BusinessException.class)
+    @ExceptionHandler(PublicException.class)
     public ResultBean handlerError(BusinessException e) {
-        ResultBean resultBean = ResultBean.builder(FAIL).setMessage(e.getMessage()).build();
+        ResultBean resultBean = ResultBean.builder(FAIL).setCode(e.getCode()).setMessage(e.getMessage()).build();
         logInfo(e);
         return resultBean;
     }
