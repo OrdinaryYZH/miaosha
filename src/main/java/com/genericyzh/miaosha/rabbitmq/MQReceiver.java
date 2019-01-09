@@ -31,7 +31,6 @@ public class MQReceiver {
     MiaoshaService miaoshaService;
 
     @RabbitListener(queues = MQConfig.MIAOSHA_QUEUE)
-    @RabbitHandler
     public void receive(@Payload MiaoshaMessage miaoshaMessage, Channel channel, @Headers Map<String, Object> headers) throws Exception {
         log.info("receive message:" + miaoshaMessage);
         miaoshaService.miaosha(miaoshaMessage);
