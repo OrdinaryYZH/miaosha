@@ -67,7 +67,7 @@ public class AdviceController implements ResponseBodyAdvice {
         if (!(body instanceof ResultBean)) {
             ResultBean resultBean = ResultBean.builder(SUCCESS).setData(body).build();
             if (body instanceof String) {
-                // todo 这里貌似可以去掉？
+                // 这里不可以去掉
                 if (selectedContentType.equals(MediaType.APPLICATION_JSON_UTF8)) {
                     return JSON.toJSONString(resultBean);
                 } else if (selectedContentType.equals(MediaType.TEXT_HTML)) {
